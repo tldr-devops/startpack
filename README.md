@@ -5,20 +5,20 @@ This is a basic setup of services for faster startup development. You can run it
 Warning: This setup doesn't provide high level of security or any high availability. You have to hire some skilled devops engineer (like me)) for close this gap after getting first round or sales.
 
 Work in progress:
-[+] Docker Compose
-[-] Docker Swarm not tested yet
-[+] Traefik
-[+] NFS for docker swarm volumes
-[+] Mariadb
-[+] Postgresql
-[+] SQL Adminer
-[-] Monitoring
-[-] Minio
-[-] Gitlab
-[-] Docker registry
-[-] Nocodb
-[-] Openproject
-[-] Bitwarden
+* [+] Docker Compose
+* [-] Docker Swarm not tested yet
+* [+] Traefik
+* [+] NFS for docker swarm volumes
+* [+] Mariadb
+* [+] Postgresql
+* [+] SQL Adminer
+* [-] Monitoring
+* [-] Minio
+* [-] Gitlab
+* [-] Docker registry
+* [-] Nocodb
+* [-] Openproject
+* [-] Bitwarden
 
 Time track:
 - [Filipp Frizzy](https://github.com/Friz-zy/) 16h 50m for 4 days
@@ -65,11 +65,10 @@ nano env.sh
 
 5) Prepare environment
 ```
-. env.sh
-sh setup.sh
+sh env.sh setup.sh
 ```
 
-6) Run your new serves
+6) Run your new services
 
 Docker Compose
 ```
