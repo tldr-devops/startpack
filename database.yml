@@ -1,0 +1,112 @@
+version: '3.8'
+
+x-adminer-labels: &adminer-labels
+  labels:
+    - traefik.enable=true
+    - traefik.docker.network=ingress
+    - traefik.http.routers.adminer-http.rule=Host(`adminer.${DOMAIN?Variable not set}`)
+    - traefik.http.routers.adminer-http.entrypoints=http
+    - traefik.http.routers.adminer-http.middlewares=admin-auth
+    - traefik.http.routers.adminer-http.service=adminer
+    #- traefik.http.routers.adminer-http.middlewares=https-redirect
+    - traefik.http.routers.adminer-https.rule=Host(`adminer.${DOMAIN?Variable not set}`)
+    - traefik.http.routers.adminer-https.entrypoints=https
+    - traefik.http.routers.adminer-https.middlewares=admin-auth
+    - traefik.http.routers.adminer-https.tls=true
+    - traefik.http.routers.adminer-https.service=adminer
+    - traefik.http.routers.adminer-https.tls.certresolver=le
+    - traefik.http.services.adminer.loadbalancer.server.port=8080
+
+x-service: &service
+  logging:
+    driver: json-file
+    options:
+      max-size: "100m"
+      max-file: "2"
+  restart: unless-stopped
+  networks:
+    - database
+
+services:
+  # https://hub.docker.com/_/adminer
+  adminer:
+    container_name: adminer
+    image: adminer
+    deploy:
+      <<: *adminer-labels
+    <<: *adminer-labels
+    <<: *service
+
+  # https://hub.docker.com/_/mariadb
+  mariadb:
+    image: mariadb:10.7
+    deploy: {}
+    <<: *service
+    environment:
+      MARIADB_ROOT_PASSWORD: ${SQL_ROOT_PASSWORD?Variable SQL_ROOT_PASSWORD not set}
+      #MARIADB_AUTO_UPGRADE: True
+    volumes:
+      - mariadb-data:/var/lib/mysql
+      - mariadb-entrypoint:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/healthcheck.sh", "--su=mysql", "--connect", "--innodb_initialized"]
+      interval: 20s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # https://github.com/docker-library/docs/blob/master/postgres/README.md
+  postgres:
+    image: postgres:14
+    deploy: {}
+    <<: *service
+    environment:
+      POSTGRES_PASSWORD: ${SQL_ROOT_PASSWORD?Variable SQL_ROOT_PASSWORD not set}
+      PGDATA: "/var/lib/postgresql/data"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - postgres-entrypoint:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/docker-healthcheck"]
+      interval: 20s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+x-volume: &volume
+  driver: local
+x-volume-driver-opts: &volume-driver-opts
+  type: none
+  o: bind
+
+volumes:
+  mariadb-data:
+    name: mariadb-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/mariadb/data
+  mariadb-entrypoint:
+    name: mariadb-entrypoint
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/mariadb/entrypoint
+  postgres-data:
+    name: postgres-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/postgres/data
+  postgres-entrypoint:
+    name: postgres-entrypoint
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/postgres/entrypoint
+
+
+networks:
+  database:
+    name: database
+    external: true
