@@ -9,6 +9,8 @@ x-service: &service
   restart: unless-stopped
 
 x-service-deploy: &service-deploy
+  mode: replicated
+  replicas: 1
   placement:
     constraints:
       - node.role == manager
@@ -92,6 +94,7 @@ services:
       - minio
       - nocodb
       - openproject
+      - portainer
 
 x-volume: &volume
   driver: local
@@ -106,9 +109,16 @@ volumes:
     driver_opts:
       <<: *volume-driver-opts
       device: "${MASTER_IP?Variable MASTER_IP not set}:${DATAPATH?Variable DATAPATH not set}/traefik/certificates"
+  portainer-data:
+    name: portainer-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: "${MASTER_IP?Variable MASTER_IP not set}:${DATAPATH?Variable DATAPATH not set}/portainer/data"
 
 x-network: &network
   driver: overlay
+  attachable: true
 
 networks:
   ingress:
@@ -137,4 +147,7 @@ networks:
     <<: *network
   openproject:
     name: openproject
+    <<: *network
+  portainer:
+    name: portainer
     <<: *network

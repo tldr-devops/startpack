@@ -3,7 +3,7 @@ version: '3.8'
 x-adminer-labels: &adminer-labels
   labels:
     - traefik.enable=true
-    - traefik.docker.network=ingress
+    - traefik.docker.network=database
     - traefik.http.routers.adminer-http.rule=Host(`adminer.${DOMAIN?Variable not set}`)
     - traefik.http.routers.adminer-http.entrypoints=http
     - traefik.http.routers.adminer-http.middlewares=admin-auth
@@ -27,20 +27,30 @@ x-service: &service
   networks:
     - database
 
+x-service-deploy: &service-deploy
+  mode: replicated
+  replicas: 1
+  placement:
+    constraints:
+      - node.role == manager
+
 services:
   # https://hub.docker.com/_/adminer
   adminer:
     container_name: adminer
     image: adminer
     deploy:
+      <<: *adminer-deploy
       <<: *adminer-labels
+      placement: {}
     <<: *adminer-labels
     <<: *service
 
   # https://hub.docker.com/_/mariadb
   mariadb:
     image: mariadb:10.7
-    deploy: {}
+    deploy:
+      <<: *adminer-deploy
     <<: *service
     environment:
       MARIADB_ROOT_PASSWORD: ${SQL_ROOT_PASSWORD?Variable SQL_ROOT_PASSWORD not set}
@@ -58,7 +68,8 @@ services:
   # https://github.com/docker-library/docs/blob/master/postgres/README.md
   postgres:
     image: postgres:14
-    deploy: {}
+    deploy:
+      <<: *adminer-deploy
     <<: *service
     environment:
       POSTGRES_PASSWORD: ${SQL_ROOT_PASSWORD?Variable SQL_ROOT_PASSWORD not set}

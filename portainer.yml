@@ -1,0 +1,76 @@
+version: '3.8'
+
+x-portainer-labels: &portainer-labels
+  labels:
+    - traefik.enable=true
+    - traefik.docker.network=portainer
+    - traefik.http.routers.portainer-http.rule=Host(`portainer.${DOMAIN?Variable not set}`)
+    - traefik.http.routers.portainer-http.entrypoints=http
+    - traefik.http.routers.portainer-http.service=portainer
+    #- traefik.http.routers.portainer-http.middlewares=https-redirect
+    - traefik.http.routers.portainer-https.rule=Host(`portainer.${DOMAIN?Variable not set}`)
+    - traefik.http.routers.portainer-https.entrypoints=https
+    - traefik.http.routers.portainer-https.tls=true
+    - traefik.http.routers.portainer-https.service=portainer
+    - traefik.http.routers.portainer-https.tls.certresolver=le
+    - traefik.http.services.portainer.loadbalancer.server.port=9000
+
+x-service: &service
+  logging:
+    driver: json-file
+    options:
+      max-size: "100m"
+      max-file: "2"
+  restart: unless-stopped
+  networks:
+    - portainer
+
+services:
+  # https://hub.docker.com/portainer/portainer-ce
+  portainer:
+    container_name: portainer
+    image: portainer/portainer-ce:alpine
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+      <<: *portainer-labels
+    <<: *portainer-labels
+    <<: *service
+    command:
+      #- --admin-password=${PORTAINER_HASHED_PASSWORD?Variable PORTAINER_HASHED_PASSWORD not set} # doesn't work in any tried variant, with escaping $$, diff hashes...
+      - --host=tcp://portainer-agent:9001
+      - --tlsskipverify
+      - --no-analytics
+      - --http-enabled
+    volumes:
+      - portainer-data:/data
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider http://localhost:9000"]
+      interval: 20s
+      timeout: 10s
+      retries: 3
+      start_period: 1s
+
+  portainer-agent:
+    container_name: portainer-agent
+    image: portainer/agent
+    deploy:
+      mode: global
+      placement:
+        constraints: [node.platform.os == linux]
+    <<: *service
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+
+volumes:
+  portainer-data:
+    external: True
+
+networks:
+  portainer:
+    name: portainer
+    external: true
