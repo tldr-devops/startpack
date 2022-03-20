@@ -22,7 +22,7 @@ Work in progress:
 * [-] Bitwarden
 
 Time track:
-- [Filipp Frizzy](https://github.com/Friz-zy/) 22h 5m for 5 days
+- [Filipp Frizzy](https://github.com/Friz-zy/) 22h 10m for 5 days
 
 ## Support
 
@@ -39,7 +39,7 @@ You need a valid domain name pointed to this server for automatically setting up
 
 If you run services with `docker-compose`, all service will be located on your single server. With `docker stack` (swarm) mode, you can [add addition servers](https://docs.docker.com/engine/swarm/swarm-tutorial/add-nodes/) in the same local network (the same network important for nfs volumes mounting unfortunately).
 
-1) Install docker if it doesn't installed
+#### 1) Install docker if it doesn't installed
 (run scripts from the internet is a bad practice, but if you don't know how to install docker with package managers - it's acceptable)
 ```
 curl -fsSL https://get.docker.com -o get-docker.sh
@@ -47,32 +47,38 @@ DRY_RUN=1 sh ./get-docker.sh
 sh ./get-docker.sh
 ```
 
-2) Install docker-compose if you don't wanna use more complex docker swarm.
+#### 2) Install docker-compose or setup docker swarm
+Install docker-compose if you don't wanna use more complex docker swarm.
 ```
 curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 ```
 
-3) Get this repo
+[Setup docker swarm](https://docs.docker.com/engine/reference/commandline/swarm_init/) if you choose using it.
+```
+docker swarm init --advertise-addr $(hostname -I | awk '{print $1}')
+```
+
+#### 3) Get this repo
 ```
 git checkout https://github.com/tldr-devops/startpack.git --depth=1
 cd startpack
 ```
 
-4) Fill necessary variables like domain name of your server, your email, passwords for basic auth and sql services.
+#### 4) Fill necessary variables like domain name of your server, your email, passwords for basic auth and sql services.
 ```
 nano env.sh
 ```
 
-5) Prepare environment
+#### 5) Prepare environment
 ```
 source env.sh
 sh setup.sh
 ```
 
-6) Run your new services
+#### 6) Run your new services
 
-Docker Compose
+##### Docker Compose
 ```
 docker-compose -f setup-compose.yml up -d
 docker-compose -f database.yml up -d
@@ -83,7 +89,7 @@ After enabling portainer you should immediately go to portainer.<your domain> an
 docker-compose -f portainer.yml up -d
 ```
 
-Docker Swarm
+##### Docker Swarm
 ```
 docker stack deploy --compose-file setup-swarm.yml
 docker stack deploy --compose-file database.yml
