@@ -4,11 +4,11 @@ x-portainer-labels: &portainer-labels
   labels:
     - traefik.enable=true
     - traefik.docker.network=portainer
-    - traefik.http.routers.portainer-http.rule=Host(`portainer.${DOMAIN?Variable not set}`)
+    - traefik.http.routers.portainer-http.rule=Host(`portainer.${DOMAIN?Variable DOMAIN not set}`)
     - traefik.http.routers.portainer-http.entrypoints=http
     - traefik.http.routers.portainer-http.service=portainer
     #- traefik.http.routers.portainer-http.middlewares=https-redirect
-    - traefik.http.routers.portainer-https.rule=Host(`portainer.${DOMAIN?Variable not set}`)
+    - traefik.http.routers.portainer-https.rule=Host(`portainer.${DOMAIN?Variable DOMAIN not set}`)
     - traefik.http.routers.portainer-https.entrypoints=https
     - traefik.http.routers.portainer-https.tls=true
     - traefik.http.routers.portainer-https.service=portainer

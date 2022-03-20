@@ -13,16 +13,16 @@ Work in progress:
 * [+] Postgresql
 * [+] SQL Adminer
 * [+] Portainer
+* [+] Docker registry
 * [-] Monitoring
 * [-] Minio
 * [-] Gitlab
-* [-] Docker registry
 * [-] Nocodb
 * [-] Openproject
 * [-] Bitwarden
 
 Time track:
-- [Filipp Frizzy](https://github.com/Friz-zy/) 20h 30m for 4 days
+- [Filipp Frizzy](https://github.com/Friz-zy/) 22h 5m for 5 days
 
 ## Support
 
@@ -76,17 +76,20 @@ Docker Compose
 ```
 docker-compose -f setup-compose.yml up -d
 docker-compose -f database.yml up -d
-
-# after enabling portainer you should immediately go to portainer.<your domain> and set admin password
+docker-compose -f registry.yml up -d
+```
+After enabling portainer you should immediately go to portainer.<your domain> and set admin password
+```
 docker-compose -f portainer.yml up -d
-
 ```
 
 Docker Swarm
 ```
 docker stack deploy --compose-file setup-swarm.yml
 docker stack deploy --compose-file database.yml
-
-# after enabling portainer you should immediately go to portainer.<your domain> and set admin password
+docker stack deploy --compose-file registry.yml
+```
+After enabling portainer you should immediately go to portainer.<your domain> and set admin password
+```
 docker stack deploy --compose-file portainer.yml
 ```

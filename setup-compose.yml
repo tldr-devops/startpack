@@ -84,6 +84,12 @@ volumes:
     driver_opts:
       <<: *volume-driver-opts
       device: ${DATAPATH?Variable DATAPATH not set}/portainer/data
+  registry-data:
+    name: registry-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/registry/data
 
 x-network: &network
   driver: bridge

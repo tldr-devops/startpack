@@ -1,0 +1,55 @@
+version: '3.8'
+
+x-registry-labels: &registry-labels
+  labels:
+    - traefik.enable=true
+    - traefik.docker.network=registry
+    - traefik.http.middlewares.registry-auth.basicauth.users=${REGISTRY_USERNAME?Variable REGISTRY_USERNAME not set}:${REGISTRY_HASHED_PASSWORD?Variable REGISTRY_HASHED_PASSWORD not set}
+    - traefik.http.routers.registry-http.rule=Host(`registry.${DOMAIN?Variable DOMAIN not set}`)
+    - traefik.http.routers.registry-http.entrypoints=http
+    - traefik.http.routers.registry-http.middlewares=registry-auth
+    - traefik.http.routers.registry-http.service=registry
+    #- traefik.http.routers.registry-http.middlewares=https-redirect
+    - traefik.http.routers.registry-https.rule=Host(`registry.${DOMAIN?Variable DOMAIN not set}`)
+    - traefik.http.routers.registry-https.entrypoints=https
+    - traefik.http.routers.registry-https.middlewares=registry-auth
+    - traefik.http.routers.registry-https.tls=true
+    - traefik.http.routers.registry-https.service=registry
+    - traefik.http.routers.registry-https.tls.certresolver=le
+    - traefik.http.services.registry.loadbalancer.server.port=5000
+
+x-service: &service
+  logging:
+    driver: json-file
+    options:
+      max-size: "100m"
+      max-file: "2"
+  restart: unless-stopped
+  networks:
+    - registry
+
+services:
+  # https://docs.docker.com/registry/configuration/
+  registry:
+    container_name: registry
+    image: registry:2
+    deploy:
+      mode: replicated
+      replicas: 1
+      <<: *registry-labels
+    <<: *registry-labels
+    <<: *service
+    environment:
+      REGISTRY_HTTP_DEBUG_PROMETHEUS_ENABLED: "true"
+      REGISTRY_HTTP_SECRET: ${REGISTRY_HASHED_PASSWORD?Variable REGISTRY_HASHED_PASSWORD not set} # just random unique data
+    volumes:
+      - registry-data:/var/lib/registry
+
+volumes:
+  registry-data:
+    external: True
+
+networks:
+  registry:
+    name: registry
+    external: true
