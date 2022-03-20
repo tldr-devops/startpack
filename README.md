@@ -83,7 +83,7 @@ echo -e "export EMAIL='Type your email here'\n$(cat env.sh)" > env.sh
 echo -e "export DOMAIN='Type your domain here'\n$(cat env.sh)" > env.sh
 ```
 
-This is your credentials:
+This is your credentials, store it in your password manager ;)
 ```
 cat env.sh
 ```
@@ -101,10 +101,17 @@ bash setup.sh
 docker-compose -f setup-compose.yml up -d
 docker-compose -f database.yml up -d
 docker-compose -f registry.yml up -d
+docker-compose -f minio.yml up -d
 ```
+
 After enabling portainer you should immediately go to portainer.<your domain> and set admin password
 ```
 docker-compose -f portainer.yml up -d
+```
+
+After enabling nocodb you should immediately go to nocodb.<your domain> and set admin password
+```
+docker-compose -f nocodb.yml up -d
 ```
 
 ##### Docker Swarm
@@ -112,8 +119,15 @@ docker-compose -f portainer.yml up -d
 docker stack deploy --compose-file setup-swarm.yml
 docker stack deploy --compose-file database.yml
 docker stack deploy --compose-file registry.yml
+docker stack deploy --compose-file minio.yml
 ```
+
 After enabling portainer you should immediately go to portainer.<your domain> and set admin password
 ```
 docker stack deploy --compose-file portainer.yml
+```
+
+After enabling nocodb you should immediately go to nocodb.<your domain> and set admin password
+```
+docker stack deploy --compose-file nocodb.yml
 ```
