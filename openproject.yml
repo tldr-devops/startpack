@@ -1,0 +1,57 @@
+version: '3.8'
+
+x-openproject-labels: &openproject-labels
+  labels:
+    - traefik.enable=true
+    - traefik.docker.network=openproject
+    - traefik.http.routers.openproject-http.rule=Host(`openproject.${DOMAIN?Variable DOMAIN not set}`)
+    - traefik.http.routers.openproject-http.entrypoints=http
+    - traefik.http.routers.openproject-http.service=openproject
+    - traefik.http.routers.openproject-http.middlewares=https-redirect
+    - traefik.http.routers.openproject-https.rule=Host(`openproject.${DOMAIN?Variable DOMAIN not set}`)
+    - traefik.http.routers.openproject-https.entrypoints=https
+    - traefik.http.routers.openproject-https.tls=true
+    - traefik.http.routers.openproject-https.service=openproject
+    - traefik.http.routers.openproject-https.tls.certresolver=le
+    - traefik.http.services.openproject.loadbalancer.server.port=80
+
+x-service: &service
+  logging:
+    driver: json-file
+    options:
+      max-size: "100m"
+      max-file: "2"
+  restart: unless-stopped
+  networks:
+    - openproject
+    - database
+
+services:
+  # https://www.openproject.org/docs/installation-and-operations/installation/docker/
+  openproject:
+    container_name: openproject
+    image: openproject/community:12
+    deploy:
+      mode: replicated
+      replicas: 1
+      <<: *openproject-labels
+    <<: *openproject-labels
+    <<: *service
+    environment:
+      DATABASE_URL: "postgres://openproject:${OPENPROJECT_SQL_PASSWORD?Variable OPENPROJECT_SQL_PASSWORD not set}@postgres:5432/openproject"
+      SERVER_HOSTNAME: openproject.${DOMAIN?Variable DOMAIN not set}
+      SECRET_KEY_BASE: ${MASTER_IP?Variable MASTER_IP not set} # just random unique data
+    volumes:
+      - openproject-data:/var/lib/openproject
+
+volumes:
+  openproject-data:
+    external: True
+
+networks:
+  openproject:
+    name: openproject
+    external: true
+  database:
+    name: database
+    external: true

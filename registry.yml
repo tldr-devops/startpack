@@ -41,7 +41,7 @@ services:
     <<: *service
     environment:
       REGISTRY_HTTP_DEBUG_PROMETHEUS_ENABLED: "true"
-      REGISTRY_HTTP_SECRET: ${REGISTRY_HASHED_PASSWORD?Variable REGISTRY_HASHED_PASSWORD not set} # just random unique data
+      REGISTRY_HTTP_SECRET: ${MASTER_IP?Variable MASTER_IP not set} # just random unique data
     volumes:
       - registry-data:/var/lib/registry
 

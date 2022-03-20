@@ -1,5 +1,5 @@
 mkdir -p ${DATAPATH?Variable DATAPATH not set}/{,nfs}/traefik/certificates
-mkdir -p ${DATAPATH?Variable DATAPATH not set}/{,nfs}/{mariadb,postgres,portainer,registry,minio,nocodb}/data
+mkdir -p ${DATAPATH?Variable DATAPATH not set}/{,nfs}/{mariadb,postgres,portainer,registry,minio,nocodb,openproject,gitlab}/data
 mkdir -p ${DATAPATH?Variable DATAPATH not set}/{mariadb,postgres}/entrypoint
 
 echo "create database nocodb; create database openproject; create database gitlab;" >> ${DATAPATH?Variable DATAPATH not set}/postgres/entrypoint/init.sql

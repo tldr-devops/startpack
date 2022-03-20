@@ -111,6 +111,12 @@ volumes:
     driver_opts:
       <<: *volume-driver-opts
       device: ${DATAPATH?Variable DATAPATH not set}/nocodb/data
+  openproject-data:
+    name: openproject-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/openproject/data
 
 x-network: &network
   driver: bridge

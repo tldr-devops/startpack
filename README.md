@@ -16,13 +16,13 @@ Work in progress:
 * [+] Docker registry
 * [+] Minio
 * [+] Nocodb
+* [+] Openproject
 * [-] Monitoring
 * [-] Gitlab
-* [-] Openproject
 * [-] Bitwarden
 
 Time track:
-- [Filipp Frizzy](https://github.com/Friz-zy/) 25h 25m for 5 days
+- [Filipp Frizzy](https://github.com/Friz-zy/) 26h 10m for 5 days
 
 ## Support
 
@@ -114,6 +114,13 @@ After enabling nocodb you should immediately go to nocodb.{your domain} and set 
 docker-compose -f nocodb.yml up -d
 ```
 
+After enabling openproject you should immediately go to openproject.{your domain},
+login with `admin` user and `admin` password, change it and update settings on
+https://openproject.{your domain}/admin/settings/general
+```
+docker-compose -f openproject.yml up -d
+```
+
 ##### Docker Swarm
 ```
 docker stack deploy --compose-file setup-swarm.yml
@@ -130,4 +137,11 @@ docker stack deploy --compose-file portainer.yml
 After enabling nocodb you should immediately go to nocodb.{your domain} and set admin password
 ```
 docker stack deploy --compose-file nocodb.yml
+```
+
+After enabling openproject you should immediately go to openproject.{your domain},
+login with `admin` user and `admin` password, change it and update settings on
+https://openproject.{your domain}/admin/settings/general
+```
+docker stack deploy --compose-file openproject.yml
 ```
