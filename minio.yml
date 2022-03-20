@@ -1,0 +1,69 @@
+version: '3.8'
+
+x-minio-labels: &minio-labels
+  labels:
+    - traefik.enable=true
+    - traefik.docker.network=minio
+    - traefik.http.routers.minio-http.rule=Host(`minio.${DOMAIN?Variable DOMAIN not set}`)
+    - traefik.http.routers.minio-http.entrypoints=http
+    - traefik.http.routers.minio-http.service=minio
+    #- traefik.http.routers.minio-http.middlewares=https-redirect
+    - traefik.http.routers.minio-https.rule=Host(`minio.${DOMAIN?Variable DOMAIN not set}`)
+    - traefik.http.routers.minio-https.entrypoints=https
+    - traefik.http.routers.minio-https.tls=true
+    - traefik.http.routers.minio-https.service=minio
+    - traefik.http.routers.minio-https.tls.certresolver=le
+    - traefik.http.services.minio.loadbalancer.server.port=9000
+    - traefik.http.routers.minio-console-http.rule=Host(`minio-console.${DOMAIN?Variable DOMAIN not set}`)
+    - traefik.http.routers.minio-console-http.entrypoints=http
+    - traefik.http.routers.minio-console-http.service=minio-console
+    #- traefik.http.routers.minio-console-http.middlewares=https-redirect
+    - traefik.http.routers.minio-console-https.rule=Host(`minio-console.${DOMAIN?Variable DOMAIN not set}`)
+    - traefik.http.routers.minio-console-https.entrypoints=https
+    - traefik.http.routers.minio-console-https.tls=true
+    - traefik.http.routers.minio-console-https.service=minio-console
+    - traefik.http.routers.minio-console-https.tls.certresolver=le
+    - traefik.http.services.minio-console.loadbalancer.server.port=9001
+
+x-service: &service
+  logging:
+    driver: json-file
+    options:
+      max-size: "100m"
+      max-file: "2"
+  restart: unless-stopped
+  networks:
+    - minio
+
+services:
+  # https://docs.docker.com/minio/configuration/
+  minio:
+    container_name: minio
+    image: quay.io/minio/minio
+    deploy:
+      mode: replicated
+      replicas: 1
+      <<: *minio-labels
+    <<: *minio-labels
+    <<: *service
+    environment:
+      MINIO_ROOT_USER: ${USERNAME?Variable USERNAME not set}
+      MINIO_ROOT_PASSWORD: ${PASSWORD?Variable PASSWORD not set}
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio-data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 1s
+      timeout: 1s
+      retries: 120
+      start_period: 2s
+
+volumes:
+  minio-data:
+    external: True
+
+networks:
+  minio:
+    name: minio
+    external: true

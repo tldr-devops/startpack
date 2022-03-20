@@ -14,15 +14,15 @@ Work in progress:
 * [+] SQL Adminer
 * [+] Portainer
 * [+] Docker registry
+* [+] Minio
 * [-] Monitoring
-* [-] Minio
 * [-] Gitlab
 * [-] Nocodb
 * [-] Openproject
 * [-] Bitwarden
 
 Time track:
-- [Filipp Frizzy](https://github.com/Friz-zy/) 22h 10m for 5 days
+- [Filipp Frizzy](https://github.com/Friz-zy/) 23h 20m for 5 days
 
 ## Support
 

@@ -51,7 +51,7 @@ services:
       labels:
         - traefik.enable=true
         - traefik.docker.network=ingress
-        - traefik.http.middlewares.admin-auth.basicauth.users=${USERNAME?Variable not set}:${HASHED_PASSWORD?Variable HASHED_PASSWORD not set}
+        - traefik.http.middlewares.admin-auth.basicauth.users=${USERNAME?Variable USERNAME not set}:${HASHED_PASSWORD?Variable HASHED_PASSWORD not set}
         - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
         - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
         - traefik.http.routers.traefik-api-http.rule=Host(`traefik.${DOMAIN?Variable DOMAIN not set}`)
@@ -121,6 +121,12 @@ volumes:
     driver_opts:
       <<: *volume-driver-opts
       device: "${MASTER_IP?Variable MASTER_IP not set}:${DATAPATH?Variable DATAPATH not set}/registry/data"
+  minio-data:
+    name: minio-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: "${MASTER_IP?Variable MASTER_IP not set}:${DATAPATH?Variable DATAPATH not set}/minio/data"
 
 x-network: &network
   driver: overlay

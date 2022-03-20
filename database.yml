@@ -60,10 +60,10 @@ services:
       - mariadb-entrypoint:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD", "/usr/local/bin/healthcheck.sh", "--su=mysql", "--connect", "--innodb_initialized"]
-      interval: 20s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
+      interval: 2s
+      timeout: 2s
+      retries: 60
+      start_period: 2s
 
   # https://github.com/docker-library/docs/blob/master/postgres/README.md
   postgres:
@@ -79,10 +79,10 @@ services:
       - postgres-entrypoint:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD", "/usr/local/bin/docker-healthcheck"]
-      interval: 20s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
+      interval: 2s
+      timeout: 2s
+      retries: 60
+      start_period: 2s
 
 x-volume: &volume
   driver: local

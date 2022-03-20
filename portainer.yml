@@ -49,10 +49,10 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     healthcheck:
       test: ["CMD-SHELL", "wget --spider http://localhost:9000"]
-      interval: 20s
-      timeout: 10s
-      retries: 3
-      start_period: 1s
+      interval: 1s
+      timeout: 1s
+      retries: 120
+      start_period: 2s
 
   portainer-agent:
     container_name: portainer-agent
