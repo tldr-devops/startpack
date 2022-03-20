@@ -1,0 +1,58 @@
+version: '3.8'
+
+x-nocodb-labels: &nocodb-labels
+  labels:
+    - traefik.enable=true
+    - traefik.docker.network=nocodb
+    - traefik.http.routers.nocodb-http.rule=Host(`nocodb.${DOMAIN?Variable DOMAIN not set}`)
+    - traefik.http.routers.nocodb-http.entrypoints=http
+    - traefik.http.routers.nocodb-http.service=nocodb
+    - traefik.http.routers.nocodb-http.middlewares=https-redirect
+    - traefik.http.routers.nocodb-https.rule=Host(`nocodb.${DOMAIN?Variable DOMAIN not set}`)
+    - traefik.http.routers.nocodb-https.entrypoints=https
+    - traefik.http.routers.nocodb-https.tls=true
+    - traefik.http.routers.nocodb-https.service=nocodb
+    - traefik.http.routers.nocodb-https.tls.certresolver=le
+    - traefik.http.services.nocodb.loadbalancer.server.port=8080
+
+x-service: &service
+  logging:
+    driver: json-file
+    options:
+      max-size: "100m"
+      max-file: "2"
+  restart: unless-stopped
+  networks:
+    - nocodb
+    - database
+
+services:
+  # https://hub.docker.com/nocodb/nocodb-ce
+  nocodb:
+    container_name: nocodb
+    image: nocodb/nocodb
+    deploy:
+      mode: replicated
+      replicas: 1
+      <<: *nocodb-labels
+    <<: *nocodb-labels
+    <<: *service
+    environment:
+      NC_DB: pg://postgres:5432?u=nocodb&p=${NOCODB_SQL_PASSWORD?Variable NOCODB_SQL_PASSWORD not set}&d=nocodb
+      NC_PUBLIC_URL: https://nocodb.${DOMAIN?Variable DOMAIN not set}
+      NC_DISABLE_TELE: "true"
+      NC_INVITE_ONLY_SIGNUP: "true"
+    volumes:
+      - nocodb-data:/usr/app/data
+
+volumes:
+  nocodb-data:
+    external: True
+
+networks:
+  nocodb:
+    name: nocodb
+    external: true
+  database:
+    name: database
+    external: true

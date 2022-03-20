@@ -8,7 +8,7 @@ x-adminer-labels: &adminer-labels
     - traefik.http.routers.adminer-http.entrypoints=http
     - traefik.http.routers.adminer-http.middlewares=admin-auth
     - traefik.http.routers.adminer-http.service=adminer
-    #- traefik.http.routers.adminer-http.middlewares=https-redirect
+    - traefik.http.routers.adminer-http.middlewares=https-redirect
     - traefik.http.routers.adminer-https.rule=Host(`adminer.${DOMAIN?Variable not set}`)
     - traefik.http.routers.adminer-https.entrypoints=https
     - traefik.http.routers.adminer-https.middlewares=admin-auth
@@ -40,7 +40,7 @@ services:
     container_name: adminer
     image: adminer
     deploy:
-      <<: *adminer-deploy
+      <<: *service-deploy
       <<: *adminer-labels
       placement: {}
     <<: *adminer-labels
@@ -50,7 +50,7 @@ services:
   mariadb:
     image: mariadb:10.7
     deploy:
-      <<: *adminer-deploy
+      <<: *service-deploy
     <<: *service
     environment:
       MARIADB_ROOT_PASSWORD: ${SQL_ROOT_PASSWORD?Variable SQL_ROOT_PASSWORD not set}
@@ -58,18 +58,12 @@ services:
     volumes:
       - mariadb-data:/var/lib/mysql
       - mariadb-entrypoint:/docker-entrypoint-initdb.d
-    healthcheck:
-      test: ["CMD", "/usr/local/bin/healthcheck.sh", "--su=mysql", "--connect", "--innodb_initialized"]
-      interval: 2s
-      timeout: 2s
-      retries: 60
-      start_period: 2s
 
   # https://github.com/docker-library/docs/blob/master/postgres/README.md
   postgres:
     image: postgres:14
     deploy:
-      <<: *adminer-deploy
+      <<: *service-deploy
     <<: *service
     environment:
       POSTGRES_PASSWORD: ${SQL_ROOT_PASSWORD?Variable SQL_ROOT_PASSWORD not set}
@@ -77,12 +71,6 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - postgres-entrypoint:/docker-entrypoint-initdb.d
-    healthcheck:
-      test: ["CMD", "/usr/local/bin/docker-healthcheck"]
-      interval: 2s
-      timeout: 2s
-      retries: 60
-      start_period: 2s
 
 x-volume: &volume
   driver: local

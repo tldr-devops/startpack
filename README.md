@@ -15,14 +15,14 @@ Work in progress:
 * [+] Portainer
 * [+] Docker registry
 * [+] Minio
+* [+] Nocodb
 * [-] Monitoring
 * [-] Gitlab
-* [-] Nocodb
 * [-] Openproject
 * [-] Bitwarden
 
 Time track:
-- [Filipp Frizzy](https://github.com/Friz-zy/) 23h 20m for 5 days
+- [Filipp Frizzy](https://github.com/Friz-zy/) 25h 25m for 5 days
 
 ## Support
 
@@ -66,14 +66,32 @@ cd startpack
 ```
 
 #### 4) Fill necessary variables like domain name of your server, your email, passwords for basic auth and sql services.
+
+Generate random passwords
 ```
-nano env.sh
+echo -e "export GITLAB_SQL_PASSWORD=$(echo $RANDOM `date`|md5sum|base64|head -c 25)\n$(cat env.sh)" > env.sh
+echo -e "export OPENPROJECT_SQL_PASSWORD=$(echo $RANDOM `date`|md5sum|base64|head -c 25)\n$(cat env.sh)" > env.sh
+echo -e "export NOCODB_SQL_PASSWORD=$(echo $RANDOM `date`|md5sum|base64|head -c 25)\n$(cat env.sh)" > env.sh
+echo -e "export REGISTRY_PASSWORD=$(echo $RANDOM `date`|md5sum|base64|head -c 25)\n$(cat env.sh)" > env.sh
+echo -e "export SQL_ROOT_PASSWORD=$(echo $RANDOM `date`|md5sum|base64|head -c 25)\n$(cat env.sh)" > env.sh
+echo -e "export PASSWORD=$(echo $RANDOM `date`|md5sum|base64|head -c 25)\n$(cat env.sh)" > env.sh
+```
+
+You should change this lines with your email and dns name
+```
+echo -e "export EMAIL='Type your email here'\n$(cat env.sh)" > env.sh
+echo -e "export DOMAIN='Type your domain here'\n$(cat env.sh)" > env.sh
+```
+
+This is your credentials:
+```
+cat env.sh
 ```
 
 #### 5) Prepare environment
 ```
 source env.sh
-sh setup.sh
+bash setup.sh
 ```
 
 #### 6) Run your new services

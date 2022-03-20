@@ -53,6 +53,15 @@ services:
       - --log
       - --api
       - --api.dashboard=true
+      - --ping=true
+      - --ping.entryPoint=ping
+      - --entryPoints.ping.address=:8081
+    healthcheck:
+      test: ["CMD", "wget", "-c", "http://localhost:8081/ping"]
+      interval: 1s
+      timeout: 1s
+      retries: 10
+      start_period: 2s
     networks:
       - ingress
       - database
@@ -96,6 +105,12 @@ volumes:
     driver_opts:
       <<: *volume-driver-opts
       device: ${DATAPATH?Variable DATAPATH not set}/minio/data
+  nocodb-data:
+    name: nocodb-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/nocodb/data
 
 x-network: &network
   driver: bridge

@@ -7,7 +7,7 @@ x-portainer-labels: &portainer-labels
     - traefik.http.routers.portainer-http.rule=Host(`portainer.${DOMAIN?Variable DOMAIN not set}`)
     - traefik.http.routers.portainer-http.entrypoints=http
     - traefik.http.routers.portainer-http.service=portainer
-    #- traefik.http.routers.portainer-http.middlewares=https-redirect
+    - traefik.http.routers.portainer-http.middlewares=https-redirect
     - traefik.http.routers.portainer-https.rule=Host(`portainer.${DOMAIN?Variable DOMAIN not set}`)
     - traefik.http.routers.portainer-https.entrypoints=https
     - traefik.http.routers.portainer-https.tls=true
