@@ -104,12 +104,12 @@ docker-compose -f registry.yml up -d
 docker-compose -f minio.yml up -d
 ```
 
-After enabling portainer you should immediately go to portainer.<your domain> and set admin password
+After enabling portainer you should immediately go to portainer.{your domain} and set admin password
 ```
 docker-compose -f portainer.yml up -d
 ```
 
-After enabling nocodb you should immediately go to nocodb.<your domain> and set admin password
+After enabling nocodb you should immediately go to nocodb.{your domain} and set admin password
 ```
 docker-compose -f nocodb.yml up -d
 ```
@@ -122,12 +122,12 @@ docker stack deploy --compose-file registry.yml
 docker stack deploy --compose-file minio.yml
 ```
 
-After enabling portainer you should immediately go to portainer.<your domain> and set admin password
+After enabling portainer you should immediately go to portainer.{your domain} and set admin password
 ```
 docker stack deploy --compose-file portainer.yml
 ```
 
-After enabling nocodb you should immediately go to nocodb.<your domain> and set admin password
+After enabling nocodb you should immediately go to nocodb.{your domain} and set admin password
 ```
 docker stack deploy --compose-file nocodb.yml
 ```
