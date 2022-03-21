@@ -2,10 +2,10 @@
 
 This is a basic setup of services for faster startup development. You can run it via [docker-compose](https://docs.docker.com/compose/) or [docker swarm](https://docs.docker.com/engine/reference/commandline/stack/).
 
-Warning: This setup doesn't provide high level of security or any high availability. You have to hire some skilled devops engineer (like me)) for close this gap after getting first round or sales.
+Warning: This setup doesn't provide high level of security or any [high availability](https://www.digitalocean.com/community/tutorials/what-is-high-availability). You have to hire some skilled devops engineer (like me)) for close this gap after getting first round or sales.
 
 Time track:
-- [Filipp Frizzy](https://github.com/Friz-zy/) 29h 10m for 6 days
+- [Filipp Frizzy](https://github.com/Friz-zy/): 29h 15m for 6 days
 
 ## Available and planned open source components
 
@@ -15,7 +15,7 @@ Time track:
 * [DONE] [Traefik](https://traefik.io) as web server with autodiscovery and [letsencrypt](https://letsencrypt.org) certs
 * [DONE] [NFS](https://hub.docker.com/r/itsthenetwork/nfs-server-alpine/) for docker swarm volumes
 * [DONE] [Portainer](https://www.portainer.io/) as admin panel for docker services
-* [DONE] [Docker registry](https://docs.docker.com/registry/) for storage your docker images
+* [DONE] [Docker registry](https://docs.docker.com/registry/) for store your docker images
 * [WIP] [Grafana](https://grafana.com/) and [Prometheus](https://prometheus.io/) for monitoring services
 
 ### Databases and Storage
@@ -25,15 +25,15 @@ Time track:
 * [DONE] [Minio](https://minio.io/) as s3 storage
 
 ### Management
-* [WIP] [Gitlab](https://about.gitlab.com/) git hosting and devops platform
-* [DONE] [Openproject](https://www.openproject.org/) management software
-* [WIP] [Taiga](https://www.taiga.io/) kanban board based management software
-* [WIP] [Bitwarden](https://bitwarden.com/) password manager for business
+* [WIP] [Gitlab](https://about.gitlab.com/) as git hosting and devops platform
+* [DONE] [Openproject](https://www.openproject.org/) as management software
+* [WIP] [Taiga](https://www.taiga.io/) as kanban board based management software
+* [WIP] [Bitwarden](https://bitwarden.com/) as password manager for business
 
 ### Backend as a service
-* [DONE] [Nocodb](https://www.nocodb.com/) airtable alternative
-* [DONE] [Strapi](https://strapi.io/) headless CMS
-* [WIP] [Appwrite](https://appwrite.io/) firebase alternative
+* [DONE] [Nocodb](https://www.nocodb.com/) as airtable alternative
+* [DONE] [Strapi](https://strapi.io/) as headless CMS
+* [WIP] [Appwrite](https://appwrite.io/) as firebase alternative
 
 ## Support
 
