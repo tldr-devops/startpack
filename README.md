@@ -4,25 +4,36 @@ This is a basic setup of services for faster startup development. You can run it
 
 Warning: This setup doesn't provide high level of security or any high availability. You have to hire some skilled devops engineer (like me)) for close this gap after getting first round or sales.
 
-Work in progress:
-* [+] Docker Compose
-* [-] Docker Swarm not tested yet
-* [+] Traefik
-* [+] NFS for docker swarm volumes
-* [+] Mariadb
-* [+] Postgresql
-* [+] SQL Adminer
-* [+] Portainer
-* [+] Docker registry
-* [+] Minio
-* [+] Nocodb
-* [+] Openproject
-* [-] Monitoring
-* [-] Gitlab
-* [-] Bitwarden
-
 Time track:
-- [Filipp Frizzy](https://github.com/Friz-zy/) 26h 10m for 5 days
+- [Filipp Frizzy](https://github.com/Friz-zy/) 29h 10m for 6 days
+
+## Available and planned open source components
+
+### Platform
+* [DONE] [Docker Compose](https://docs.docker.com/compose/)
+* [Not tested yet] [Docker Swarm](https://docs.docker.com/engine/reference/commandline/stack/)
+* [DONE] [Traefik](https://traefik.io) as web server with autodiscovery and [letsencrypt](https://letsencrypt.org) certs
+* [DONE] [NFS](https://hub.docker.com/r/itsthenetwork/nfs-server-alpine/) for docker swarm volumes
+* [DONE] [Portainer](https://www.portainer.io/) as admin panel for docker services
+* [DONE] [Docker registry](https://docs.docker.com/registry/) for storage your docker images
+* [WIP] [Grafana](https://grafana.com/) and [Prometheus](https://prometheus.io/) for monitoring services
+
+### Databases and Storage
+* [DONE] [Mariadb](https://mariadb.org/) as SQL database
+* [DONE] [Postgresql](https://www.postgresql.org/) as another popular SQL database
+* [DONE] [SQL Adminer](https://www.adminer.org/) as admin panel for SQL databases
+* [DONE] [Minio](https://minio.io/) as s3 storage
+
+### Management
+* [WIP] [Gitlab](https://about.gitlab.com/) git hosting and devops platform
+* [DONE] [Openproject](https://www.openproject.org/) management software
+* [WIP] [Taiga](https://www.taiga.io/) kanban board based management software
+* [WIP] [Bitwarden](https://bitwarden.com/) password manager for business
+
+### Backend as a service
+* [DONE] [Nocodb](https://www.nocodb.com/) airtable alternative
+* [DONE] [Strapi](https://strapi.io/) headless CMS
+* [WIP] [Appwrite](https://appwrite.io/) firebase alternative
 
 ## Support
 
@@ -69,6 +80,7 @@ cd startpack
 
 Generate random passwords
 ```
+echo -e "export STRAPI_SQL_PASSWORD=$(echo $RANDOM `date`|md5sum|base64|head -c 25)\n$(cat env.sh)" > env.sh
 echo -e "export GITLAB_SQL_PASSWORD=$(echo $RANDOM `date`|md5sum|base64|head -c 25)\n$(cat env.sh)" > env.sh
 echo -e "export OPENPROJECT_SQL_PASSWORD=$(echo $RANDOM `date`|md5sum|base64|head -c 25)\n$(cat env.sh)" > env.sh
 echo -e "export NOCODB_SQL_PASSWORD=$(echo $RANDOM `date`|md5sum|base64|head -c 25)\n$(cat env.sh)" > env.sh
@@ -121,6 +133,11 @@ https://openproject.{your domain}/admin/settings/general
 docker-compose -f openproject.yml up -d
 ```
 
+After enabling strapi you should immediately go to strapi.{your domain}/admin and set admin password
+```
+docker-compose -f strapi.yml up -d
+```
+
 ##### Docker Swarm
 ```
 docker stack deploy --compose-file setup-swarm.yml
@@ -144,4 +161,9 @@ login with `admin` user and `admin` password, change it and update settings on
 https://openproject.{your domain}/admin/settings/general
 ```
 docker stack deploy --compose-file openproject.yml
+```
+
+After enabling strapi you should immediately go to strapi.{your domain}/admin and set admin password
+```
+docker stack deploy --compose-file strapi.yml
 ```

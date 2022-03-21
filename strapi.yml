@@ -1,0 +1,60 @@
+version: '3.8'
+
+x-strapi-labels: &strapi-labels
+  labels:
+    - traefik.enable=true
+    - traefik.docker.network=strapi
+    - traefik.http.routers.strapi-http.rule=Host(`strapi.${DOMAIN?Variable DOMAIN not set}`)
+    - traefik.http.routers.strapi-http.entrypoints=http
+    - traefik.http.routers.strapi-http.service=strapi
+    - traefik.http.routers.strapi-http.middlewares=https-redirect
+    - traefik.http.routers.strapi-https.rule=Host(`strapi.${DOMAIN?Variable DOMAIN not set}`)
+    - traefik.http.routers.strapi-https.entrypoints=https
+    - traefik.http.routers.strapi-https.tls=true
+    - traefik.http.routers.strapi-https.service=strapi
+    - traefik.http.routers.strapi-https.tls.certresolver=le
+    - traefik.http.services.strapi.loadbalancer.server.port=1337
+
+x-service: &service
+  logging:
+    driver: json-file
+    options:
+      max-size: "100m"
+      max-file: "2"
+  restart: unless-stopped
+  networks:
+    - strapi
+    - database
+
+services:
+  # https://docs.strapi.io/developer-docs/latest/getting-started/quick-start.html
+  strapi:
+    container_name: strapi
+    image: strapi/strapi
+    deploy:
+      mode: replicated
+      replicas: 1
+      <<: *strapi-labels
+    <<: *strapi-labels
+    <<: *service
+    environment:
+      DATABASE_CLIENT: postgres
+      DATABASE_NAME: strapi
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_USERNAME: strapi
+      DATABASE_PASSWORD: ${STRAPI_SQL_PASSWORD?Variable STRAPI_SQL_PASSWORD not set}
+    volumes:
+      - strapi-data:/srv/app
+
+volumes:
+  strapi-data:
+    external: True
+
+networks:
+  strapi:
+    name: strapi
+    external: true
+  database:
+    name: database
+    external: true

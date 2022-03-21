@@ -104,6 +104,7 @@ services:
       - nocodb
       - openproject
       - portainer
+      - strapi
 
 x-volume: &volume
   driver: local
@@ -148,6 +149,12 @@ volumes:
     driver_opts:
       <<: *volume-driver-opts
       device: "${MASTER_IP?Variable MASTER_IP not set}:${DATAPATH?Variable DATAPATH not set}/openproject/data"
+  strapi-data:
+    name: strapi-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: "${MASTER_IP?Variable MASTER_IP not set}:${DATAPATH?Variable DATAPATH not set}/strapi/data"
 
 x-network: &network
   driver: overlay
@@ -183,4 +190,7 @@ networks:
     <<: *network
   portainer:
     name: portainer
+    <<: *network
+  strapi:
+    name: strapi
     <<: *network
