@@ -4,8 +4,10 @@ This is a basic setup of services for faster startup development. You can run it
 
 Warning: This setup doesn't provide high level of security or any [high availability](https://www.digitalocean.com/community/tutorials/what-is-high-availability). You have to hire some skilled devops engineer (like me)) for close this gap after getting first round or sales.
 
+Also you can check [Awesome Selfhosted](https://github.com/awesome-selfhosted/awesome-selfhosted) and [Free for Dev](https://free-for.dev/) for more options ;)
+
 Time track:
-- [Filipp Frizzy](https://github.com/Friz-zy/): 29h 15m for 6 days
+- [Filipp Frizzy](https://github.com/Friz-zy/): 29h 20m for 6 days
 
 ## Available and planned open source components
 
