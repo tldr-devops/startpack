@@ -56,6 +56,9 @@ services:
       - --ping=true
       - --ping.entryPoint=ping
       - --entryPoints.ping.address=:8081
+      - --metrics.prometheus=true
+      - --entryPoints.metrics.address=:8082
+      - --metrics.prometheus.entryPoint=metrics
     healthcheck:
       test: ["CMD", "wget", "-c", "http://localhost:8081/ping"]
       interval: 1s
@@ -74,6 +77,8 @@ services:
       - openproject
       - portainer
       - strapi
+      - appwrite
+      - taiga
 
 x-volume: &volume
   driver: local
@@ -124,6 +129,12 @@ volumes:
     driver_opts:
       <<: *volume-driver-opts
       device: ${DATAPATH?Variable DATAPATH not set}/strapi/data
+  telegraf-configs:
+    name: telegraf-configs
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/telegraf/configs
 
 x-network: &network
   driver: bridge
@@ -162,4 +173,10 @@ networks:
     <<: *network
   strapi:
     name: strapi
+    <<: *network
+  appwrite:
+    name: appwrite
+    <<: *network
+  taiga:
+    name: taiga
     <<: *network

@@ -1,0 +1,231 @@
+version: '3.8'
+
+x-prometheus-labels: &prometheus-labels
+  labels:
+    - traefik.enable=true
+    - traefik.docker.network=monitoring
+    - traefik.http.routers.prometheus-http.rule=Host(`prometheus.${DOMAIN?Variable not set}`)
+    - traefik.http.routers.prometheus-http.entrypoints=http
+    #- traefik.http.routers.prometheus-http.middlewares=admin-auth
+    - traefik.http.routers.prometheus-http.service=prometheus
+    - traefik.http.routers.prometheus-http.middlewares=https-redirect
+    - traefik.http.routers.prometheus-https.rule=Host(`prometheus.${DOMAIN?Variable not set}`)
+    - traefik.http.routers.prometheus-https.entrypoints=https
+    - traefik.http.routers.prometheus-https.middlewares=admin-auth
+    - traefik.http.routers.prometheus-https.tls=true
+    - traefik.http.routers.prometheus-https.service=prometheus
+    - traefik.http.routers.prometheus-https.tls.certresolver=le
+    - traefik.http.services.prometheus.loadbalancer.server.port=9090
+
+x-influxdb-labels: &influxdb-labels
+  labels:
+    - traefik.enable=true
+    - traefik.docker.network=monitoring
+    - traefik.http.routers.influxdb-http.rule=Host(`influxdb.${DOMAIN?Variable not set}`)
+    - traefik.http.routers.influxdb-http.entrypoints=http
+    #- traefik.http.routers.influxdb-http.middlewares=admin-auth
+    - traefik.http.routers.influxdb-http.service=influxdb
+    - traefik.http.routers.influxdb-http.middlewares=https-redirect
+    - traefik.http.routers.influxdb-https.rule=Host(`influxdb.${DOMAIN?Variable not set}`)
+    - traefik.http.routers.influxdb-https.entrypoints=https
+    #- traefik.http.routers.influxdb-https.middlewares=admin-auth
+    - traefik.http.routers.influxdb-https.tls=true
+    - traefik.http.routers.influxdb-https.service=influxdb
+    - traefik.http.routers.influxdb-https.tls.certresolver=le
+    - traefik.http.services.influxdb.loadbalancer.server.port=8086
+
+x-service: &service
+  logging:
+    driver: json-file
+    options:
+      max-size: "100m"
+      max-file: "2"
+  restart: unless-stopped
+  networks:
+    - monitoring
+
+services:
+  # https://hub.docker.com/r/prom/prometheus
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      <<: *prometheus-labels
+    <<: *prometheus-labels
+    <<: *service
+    volumes:
+      - prometheus-configs:/etc/prometheus
+      - prometheus-data:/data
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/data
+      - --storage.tsdb.retention.time=15d
+    user: root
+
+  # https://hub.docker.com/_/influxdb
+  # https://docs.influxdata.com/influxdb/v2.1/install/?t=Docker
+  # https://docs.influxdata.com/influxdb/v2.1/reference/config-options/
+  # https://github.com/influxdata/community-templates/blob/master/docs/use_a_template.md
+  influxdb:
+    container_name: influxdb
+    image: influxdb:2.1
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      <<: *influxdb-labels
+    <<: *influxdb-labels
+    <<: *service
+    volumes:
+      - influxdb-data:/var/lib/influxdb2
+      - influxdb-entrypoint:/docker-entrypoint-initdb.d
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: ${USERNAME?Variable USERNAME not set}
+      DOCKER_INFLUXDB_INIT_PASSWORD: ${PASSWORD?Variable PASSWORD not set}
+      DOCKER_INFLUXDB_INIT_ORG: ${DOMAIN?Variable DOMAIN not set}
+      DOCKER_INFLUXDB_INIT_BUCKET: telegraf
+      DOCKER_INFLUXDB_INIT_RETENTION: 2w
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${HASHED_PASSWORD?Variable HASHED_PASSWORD not set}
+    user: root
+
+  # https://hub.docker.com/_/telegraf
+  # https://github.com/influxdata/telegraf/blob/master/docs/FAQ.md
+  # https://docs.influxdata.com/telegraf/v1.21/administration/commands/
+  telegraf-node:
+    container_name: telegraf-node
+    image: telegraf
+    deploy:
+      mode: global
+    <<: *service
+    volumes:
+      - telegraf-configs:/etc/telegraf
+      - /:/hostfs:ro
+    command:
+      - --config=/etc/telegraf/telegraf-node.conf
+    environment:
+      HOST_ETC: /hostfs/etc
+      HOST_PROC: /hostfs/proc
+      HOST_SYS: /hostfs/sys
+      HOST_VAR: /hostfs/var
+      HOST_RUN: /hostfs/run
+      HOST_MOUNT_PREFIX: /hostfs
+      INFLUXDB_TOKEN: ${HASHED_PASSWORD?Variable HASHED_PASSWORD not set}
+      INFLUXDB_ORG: ${DOMAIN?Variable DOMAIN not set}
+      INFLUXDB_BUCKET: telegraf
+    user: root
+    entrypoint: "telegraf"
+
+  telegraf:
+    container_name: telegraf
+    image: telegraf
+    deploy:
+      mode: replicated
+      replicas: 1
+    <<: *service
+    volumes:
+      - telegraf-configs:/etc/telegraf
+    environment:
+      SQL_ROOT_PASSWORD: ${SQL_ROOT_PASSWORD?Variable SQL_ROOT_PASSWORD not set}
+      INFLUXDB_TOKEN: ${HASHED_PASSWORD?Variable HASHED_PASSWORD not set}
+      INFLUXDB_ORG: ${DOMAIN?Variable DOMAIN not set}
+      INFLUXDB_BUCKET: telegraf
+    networks:
+      - ingress
+      - database
+      - monitoring
+      - bitwarden
+      - gitlab
+      - registry
+      - minio
+      - nocodb
+      - openproject
+      - portainer
+      - strapi
+      - appwrite
+      - taiga
+
+x-volume: &volume
+  driver: local
+x-volume-driver-opts: &volume-driver-opts
+  type: none
+  o: bind
+
+volumes:
+  prometheus-data:
+    name: prometheus-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/prometheus/data
+  prometheus-configs:
+    name: prometheus-configs
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/prometheus/configs
+  telegraf-configs:
+    external: True
+  influxdb-data:
+    name: influxdb-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/influxdb/data
+  influxdb-entrypoint:
+    name: influxdb-entrypoint
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/influxdb/entrypoint
+
+x-network: &network
+  external: true
+
+networks:
+  ingress:
+    name: ingress
+    <<: *network
+  monitoring:
+    name: monitoring
+    <<: *network
+  bitwarden:
+    name: bitwarden
+    <<: *network
+  gitlab:
+    name: gitlab
+    <<: *network
+  registry:
+    name: registry
+    <<: *network
+  minio:
+    name: minio
+    <<: *network
+  database:
+    name: database
+    <<: *network
+  nocodb:
+    name: nocodb
+    <<: *network
+  openproject:
+    name: openproject
+    <<: *network
+  portainer:
+    name: portainer
+    <<: *network
+  strapi:
+    name: strapi
+    <<: *network
+  appwrite:
+    name: appwrite
+    <<: *network
+  taiga:
+    name: taiga
+    <<: *network

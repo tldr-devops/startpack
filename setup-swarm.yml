@@ -29,7 +29,7 @@ services:
       SHARED_DIRECTORY: ${DATAPATH?Variable DATAPATH not set}
       PERMITTED: ${MASTER_IP_MASK?Variable MASTER_IP_MASK not set}
     volumes:
-      - ${DATAPATH?Variable DATAPATH not set}/nfs:${DATAPATH?Variable DATAPATH not set}
+      - ${DATAPATH?Variable DATAPATH not set}:${DATAPATH?Variable DATAPATH not set}
     privileged: true
     #cap_add:
       #- SYS_ADMIN
@@ -87,6 +87,9 @@ services:
       - --ping=true
       - --ping.entryPoint=ping
       - --entryPoints.ping.address=:8081
+      - --metrics.prometheus=true
+      - --entryPoints.metrics.address=:8082
+      - --metrics.prometheus.entryPoint=metrics
     healthcheck:
       test: ["CMD", "wget", "-c", "http://localhost:8081/ping"]
       interval: 1s
@@ -105,6 +108,8 @@ services:
       - openproject
       - portainer
       - strapi
+      - appwrite
+      - taiga
 
 x-volume: &volume
   driver: local
@@ -155,6 +160,12 @@ volumes:
     driver_opts:
       <<: *volume-driver-opts
       device: "${MASTER_IP?Variable MASTER_IP not set}:${DATAPATH?Variable DATAPATH not set}/strapi/data"
+  telegraf-configs:
+    name: telegraf-configs
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: "${MASTER_IP?Variable MASTER_IP not set}:${DATAPATH?Variable DATAPATH not set}/telegraf/configs"
 
 x-network: &network
   driver: overlay
@@ -193,4 +204,10 @@ networks:
     <<: *network
   strapi:
     name: strapi
+    <<: *network
+  appwrite:
+    name: appwrite
+    <<: *network
+  taiga:
+    name: taiga
     <<: *network

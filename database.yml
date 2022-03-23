@@ -6,7 +6,7 @@ x-adminer-labels: &adminer-labels
     - traefik.docker.network=database
     - traefik.http.routers.adminer-http.rule=Host(`adminer.${DOMAIN?Variable not set}`)
     - traefik.http.routers.adminer-http.entrypoints=http
-    - traefik.http.routers.adminer-http.middlewares=admin-auth
+    #- traefik.http.routers.adminer-http.middlewares=admin-auth
     - traefik.http.routers.adminer-http.service=adminer
     - traefik.http.routers.adminer-http.middlewares=https-redirect
     - traefik.http.routers.adminer-https.rule=Host(`adminer.${DOMAIN?Variable not set}`)
@@ -48,6 +48,7 @@ services:
 
   # https://hub.docker.com/_/mariadb
   mariadb:
+    container_name: mariadb
     image: mariadb:10.7
     deploy:
       <<: *service-deploy
@@ -61,6 +62,7 @@ services:
 
   # https://github.com/docker-library/docs/blob/master/postgres/README.md
   postgres:
+    container_name: postgres
     image: postgres:14
     deploy:
       <<: *service-deploy

@@ -7,7 +7,7 @@ Warning: This setup doesn't provide high level of security or any [high availabi
 Also you can check [Awesome Selfhosted](https://github.com/awesome-selfhosted/awesome-selfhosted) and [Free for Dev](https://free-for.dev/) for more options ;)
 
 Time track:
-- [Filipp Frizzy](https://github.com/Friz-zy/): 29h 20m for 6 days
+- [Filipp Frizzy](https://github.com/Friz-zy/): 40h 5m for 8 days
 
 ## Available and planned open source components
 
@@ -18,6 +18,7 @@ Time track:
 * [DONE] [NFS](https://hub.docker.com/r/itsthenetwork/nfs-server-alpine/) for docker swarm volumes
 * [DONE] [Portainer](https://www.portainer.io/) as admin panel for docker services
 * [DONE] [Docker registry](https://docs.docker.com/registry/) for store your docker images
+* [DONE] [Influxdb 2](https://www.influxdata.com/blog/influxdb-2-0-open-source-is-generally-available/) and [Telegraf](https://www.influxdata.com/time-series-platform/telegraf/) for monitoring services
 * [WIP] [Grafana](https://grafana.com/) and [Prometheus](https://prometheus.io/) for monitoring services
 
 ### Databases and Storage
@@ -29,13 +30,13 @@ Time track:
 ### Management
 * [WIP] [Gitlab](https://about.gitlab.com/) as git hosting and devops platform
 * [DONE] [Openproject](https://www.openproject.org/) as management software
-* [WIP] [Taiga](https://www.taiga.io/) as kanban board based management software
-* [WIP] [Bitwarden](https://bitwarden.com/) as password manager for business
+* [Backlog] [Taiga](https://www.taiga.io/) as kanban board based management software
+* [Backlog] [Bitwarden](https://bitwarden.com/) as password manager for business
 
 ### Backend as a service
 * [DONE] [Nocodb](https://www.nocodb.com/) as airtable alternative
 * [DONE] [Strapi](https://strapi.io/) as headless CMS
-* [WIP] [Appwrite](https://appwrite.io/) as firebase alternative
+* [Backlog] [Appwrite](https://appwrite.io/) as firebase alternative
 
 ## Support
 
@@ -113,6 +114,7 @@ bash setup.sh
 ##### Docker Compose
 ```
 docker-compose -f setup-compose.yml up -d
+docker-compose -f monitoring.yml up -d
 docker-compose -f database.yml up -d
 docker-compose -f registry.yml up -d
 docker-compose -f minio.yml up -d
@@ -143,6 +145,7 @@ docker-compose -f strapi.yml up -d
 ##### Docker Swarm
 ```
 docker stack deploy --compose-file setup-swarm.yml
+docker stack deploy --compose-file monitoring.yml
 docker stack deploy --compose-file database.yml
 docker stack deploy --compose-file registry.yml
 docker stack deploy --compose-file minio.yml
