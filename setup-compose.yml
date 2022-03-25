@@ -135,6 +135,18 @@ volumes:
     driver_opts:
       <<: *volume-driver-opts
       device: ${DATAPATH?Variable DATAPATH not set}/telegraf/configs
+  grafana-data:
+    name: grafana-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/grafana/data
+  grafana-provisioning:
+    name: grafana-provisioning
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/grafana/provisioning
 
 x-network: &network
   driver: bridge
