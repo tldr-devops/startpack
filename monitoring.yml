@@ -231,6 +231,7 @@ services:
       - strapi
       - appwrite
       - taiga
+      - rocketchat
 
 x-volume: &volume
   driver: local

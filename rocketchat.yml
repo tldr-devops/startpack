@@ -1,0 +1,130 @@
+version: '3.8'
+
+x-rocketchat-labels: &rocketchat-labels
+  labels:
+    - traefik.enable=true
+    - traefik.docker.network=monitoring
+    - traefik.http.routers.rocketchat-http.rule=Host(`rocketchat.${DOMAIN?Variable not set}`)
+    - traefik.http.routers.rocketchat-http.entrypoints=http
+    #- traefik.http.routers.rocketchat-http.middlewares=admin-auth
+    - traefik.http.routers.rocketchat-http.service=rocketchat
+    - traefik.http.routers.rocketchat-http.middlewares=https-redirect
+    - traefik.http.routers.rocketchat-https.rule=Host(`rocketchat.${DOMAIN?Variable not set}`)
+    - traefik.http.routers.rocketchat-https.entrypoints=https
+    #- traefik.http.routers.rocketchat-https.middlewares=admin-auth
+    - traefik.http.routers.rocketchat-https.tls=true
+    - traefik.http.routers.rocketchat-https.service=rocketchat
+    - traefik.http.routers.rocketchat-https.tls.certresolver=le
+    - traefik.http.services.rocketchat.loadbalancer.server.port=3000
+
+x-service: &service
+  logging:
+    driver: json-file
+    options:
+      max-size: "100m"
+      max-file: "2"
+  restart: unless-stopped
+  networks:
+    - rocketchat
+
+services:
+  # https://docs.rocket.chat/quick-start/installing-and-updating/rapid-deployment-methods/docker-and-docker-compose
+  # https://docs.rocket.chat/quick-start/accessing-your-workspace/creating-the-first-administrator
+  rocketchat:
+    container_name: rocketchat
+    image: registry.rocket.chat/rocketchat/rocket.chat
+    deploy:
+      mode: replicated
+      replicas: 1
+      <<: *rocketchat-labels
+    <<: *rocketchat-labels
+    <<: *service
+    environment:
+      PORT: 3000
+      ROOT_URL: "https://rocketchat.${DOMAIN?Variable not set}"
+      MONGO_URL: "mongodb://rocketchat-mongodb:27017/rocketchat"
+      MONGO_OPLOG_URL: "mongodb://rocketchat-mongodb:27017/local"
+      #REG_TOKEN: ${REG_TOKEN}
+      #MAIL_URL: smtp://smtp.email
+      #HTTP_PROXY: http://proxy.domain.com
+      #HTTPS_PROXY: http://proxy.domain.com
+    depends_on:
+      - rocketchat-mongodb
+    volumes:
+      - rocketchat-data:/app/uploads
+    command: >
+      bash -c
+        "for i in `seq 1 30`; do
+          node main.js &&
+          s=$$? && break || s=$$?;
+          echo \"Tried $$i times. Waiting 5 secs...\";
+          sleep 5;
+        done; (exit $$s)"
+    user: root
+
+  rocketchat-mongodb:
+    container_name: rocketchat-mongodb
+    image: mongo:4.0
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+    <<: *service
+    volumes:
+      - rocketchat-mongodb-data:/data/db
+    command: mongod --smallfiles --oplogSize 128 --replSet rs0 --storageEngine=mmapv1
+    user: root
+
+  rocketchat-mongodb-init:
+    container_name: rocketchat-mongodb-init
+    image: mongo:4.0
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+    <<: *service
+    restart: on-failure
+    volumes:
+      - rocketchat-mongodb-data:/data/db
+    command: >
+      bash -c
+        "for i in `seq 1 30`; do
+          mongo rocketchat-mongodb/rocketchat --eval \"
+            rs.initiate({
+              _id: 'rs0',
+              members: [ { _id: 0, host: 'localhost:27017' } ]})\" &&
+          s=$$? && break || s=$$?;
+          echo \"Tried $$i times. Waiting 5 secs...\";
+          sleep 5;
+        done; (exit $$s)"
+    depends_on:
+      - rocketchat-mongodb
+    user: root
+
+x-volume: &volume
+  driver: local
+x-volume-driver-opts: &volume-driver-opts
+  type: none
+  o: bind
+
+volumes:
+  rocketchat-mongodb-data:
+    name: rocketchat-mongodb-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/rocketchat-mongodb/data
+  rocketchat-data:
+    external: True
+
+x-network: &network
+  external: true
+
+networks:
+  rocketchat:
+    name: rocketchat
+    <<: *network

@@ -7,7 +7,7 @@ Warning: This setup doesn't provide high level of security or any [high availabi
 Also you can check [Awesome Selfhosted](https://github.com/awesome-selfhosted/awesome-selfhosted) and [Free for Dev](https://free-for.dev/) for more options ;)
 
 Time track:
-- [Filipp Frizzy](https://github.com/Friz-zy/): 44h 5m for 10 days
+- [Filipp Frizzy](https://github.com/Friz-zy/): 45h 15m for 10 days
 
 ## Available and planned open source components
 
@@ -34,8 +34,8 @@ Time track:
 * [Backlog] [Bitwarden](https://bitwarden.com/) as password manager for business
 
 ### Chat
+* [DONE] [rocket](https://rocket.chat/)
 * [Backlog] [mattermost](https://mattermost.com/)
-* [Backlog] [rocket](https://rocket.chat/)
 
 ### Backend as a service
 * [DONE] [Nocodb](https://www.nocodb.com/) as airtable alternative
@@ -136,7 +136,7 @@ docker-compose -f nocodb.yml up -d
 
 After enabling openproject you should immediately go to openproject.{your domain},
 login with `admin` user and `admin` password, change it and update settings on
-https://openproject.{your domain}/admin/settings/general
+openproject.{your domain}/admin/settings/general
 ```
 docker-compose -f openproject.yml up -d
 ```
@@ -144,6 +144,11 @@ docker-compose -f openproject.yml up -d
 After enabling strapi you should immediately go to strapi.{your domain}/admin and set admin password
 ```
 docker-compose -f strapi.yml up -d
+```
+
+After enabling rocketchat you should immediately go to rocketchat.{your domain}/admin and set admin password
+```
+docker-compose -f rocketchat.yml up -d
 ```
 
 ##### Docker Swarm
@@ -167,7 +172,7 @@ docker stack deploy --compose-file nocodb.yml
 
 After enabling openproject you should immediately go to openproject.{your domain},
 login with `admin` user and `admin` password, change it and update settings on
-https://openproject.{your domain}/admin/settings/general
+openproject.{your domain}/admin/settings/general
 ```
 docker stack deploy --compose-file openproject.yml
 ```
@@ -175,4 +180,9 @@ docker stack deploy --compose-file openproject.yml
 After enabling strapi you should immediately go to strapi.{your domain}/admin and set admin password
 ```
 docker stack deploy --compose-file strapi.yml
+```
+
+After enabling rocketchat you should immediately go to rocketchat.{your domain}/admin and set admin password
+```
+docker stack deploy --compose-file rocketchat.yml
 ```

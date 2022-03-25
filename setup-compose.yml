@@ -79,6 +79,7 @@ services:
       - strapi
       - appwrite
       - taiga
+      - rocketchat
 
 x-volume: &volume
   driver: local
@@ -147,6 +148,12 @@ volumes:
     driver_opts:
       <<: *volume-driver-opts
       device: ${DATAPATH?Variable DATAPATH not set}/grafana/provisioning
+  rocketchat-data:
+    name: rocketchat-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/rocketchat/data
 
 x-network: &network
   driver: bridge
@@ -191,4 +198,7 @@ networks:
     <<: *network
   taiga:
     name: taiga
+    <<: *network
+  rocketchat:
+    name: rocketchat
     <<: *network

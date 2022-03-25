@@ -1,4 +1,4 @@
-mkdir -p ${DATAPATH?Variable DATAPATH not set}/{traefik,mariadb,postgres,portainer,registry,minio,nocodb,openproject,gitlab,strapi,telegraf,victoriametrics,influxdb,grafana}/{data,entrypoint,configs,certificates}
+mkdir -p ${DATAPATH?Variable DATAPATH not set}/{traefik,mariadb,postgres,portainer,registry,minio,nocodb,openproject,gitlab,strapi,telegraf,victoriametrics,influxdb,grafana,rocketchat,rocketchat-mongodb}/{data,entrypoint,configs,certificates}
 
 envsubst < configs/postgres.sql > ${DATAPATH?Variable DATAPATH not set}/postgres/entrypoint/init.sql
 cp -r configs/victoriametrics/* ${DATAPATH?Variable DATAPATH not set}/victoriametrics/configs/
