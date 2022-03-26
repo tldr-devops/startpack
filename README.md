@@ -7,7 +7,7 @@ Warning: This setup doesn't provide high level of security or any [high availabi
 Also you can check [Awesome Selfhosted](https://github.com/awesome-selfhosted/awesome-selfhosted) and [Free for Dev](https://free-for.dev/) for more options ;)
 
 Time track:
-- [Filipp Frizzy](https://github.com/Friz-zy/): 50h 0m for 12 days
+- [Filipp Frizzy](https://github.com/Friz-zy/): 51h 35m for 12 days
 
 ## Available and planned open source components
 
@@ -30,8 +30,8 @@ Time track:
 ### Management
 * [DONE] [Gitlab](https://about.gitlab.com/) as git hosting and devops platform
 * [DONE] [Openproject](https://www.openproject.org/) as management software
+* [WIP] [Vaultwarden](https://github.com/dani-garcia/vaultwarden/wiki) as password manager for business
 * [Backlog] [Taiga](https://www.taiga.io/) as kanban board based management software
-* [Backlog] [Bitwarden](https://bitwarden.com/) as password manager for business
 
 ### Chat
 * [DONE] [rocket](https://rocket.chat/)
@@ -118,14 +118,29 @@ bash setup.sh
 
 #### 6) Run your new services
 
+After entering all commands below you'll able to login into your new services by addresses:
+* https://portainer.${YOUR DOMAIN}
+* https://registry.${YOUR DOMAIN}
+* https://influxdb.${YOUR DOMAIN}
+* https://grafana.${YOUR DOMAIN}
+* https://victoriametrics.${YOUR DOMAIN}
+* https://adminer.${YOUR DOMAIN}
+* https://minio.${YOUR DOMAIN}
+* https://gitlab.${YOUR DOMAIN}
+* https://openproject.${YOUR DOMAIN}
+* https://rocketchat.${YOUR DOMAIN}
+* https://vaultwarden.${YOUR DOMAIN}/admin
+* https://nocodb.${YOUR DOMAIN}
+* https://strapi.${YOUR DOMAIN}
+
 ##### Docker Compose
 ```
 docker-compose -f setup-compose.yml up -d
 docker-compose -f monitoring.yml up -d
 docker-compose -f database.yml up -d
-docker-compose -f gitlab.yml up -d
 docker-compose -f registry.yml up -d
 docker-compose -f minio.yml up -d
+docker-compose -f vaultwarden.yml up -d
 ```
 
 After enabling portainer you should immediately go to portainer.{your domain} and set admin password
@@ -133,9 +148,15 @@ After enabling portainer you should immediately go to portainer.{your domain} an
 docker-compose -f portainer.yml up -d
 ```
 
-After enabling nocodb you should immediately go to nocodb.{your domain} and set admin password
+After enabling gitlab you should immediately go to gitlab.{your domain}, login with user `root` and your `$PASSWORD`,
+and disable new user registration in configs.
 ```
-docker-compose -f nocodb.yml up -d
+docker-compose -f gitlab.yml up -d
+```
+
+After enabling rocketchat you should immediately go to rocketchat.{your domain}/admin and set admin password
+```
+docker-compose -f rocketchat.yml up -d
 ```
 
 After enabling openproject you should immediately go to openproject.{your domain},
@@ -145,24 +166,25 @@ openproject.{your domain}/admin/settings/general
 docker-compose -f openproject.yml up -d
 ```
 
+After enabling nocodb you should immediately go to nocodb.{your domain} and set admin password
+```
+docker-compose -f nocodb.yml up -d
+```
+
 After enabling strapi you should immediately go to strapi.{your domain}/admin and set admin password
 ```
 docker-compose -f strapi.yml up -d
 ```
 
-After enabling rocketchat you should immediately go to rocketchat.{your domain}/admin and set admin password
-```
-docker-compose -f rocketchat.yml up -d
-```
 
 ##### Docker Swarm
 ```
 docker stack deploy --compose-file setup-swarm.yml
 docker stack deploy --compose-file monitoring.yml
 docker stack deploy --compose-file database.yml
-docker stack deploy --compose-file gitlab.yml
 docker stack deploy --compose-file registry.yml
 docker stack deploy --compose-file minio.yml
+docker stack deploy --compose-file vaultwarden.yml
 ```
 
 After enabling portainer you should immediately go to portainer.{your domain} and set admin password
@@ -170,9 +192,15 @@ After enabling portainer you should immediately go to portainer.{your domain} an
 docker stack deploy --compose-file portainer.yml
 ```
 
-After enabling nocodb you should immediately go to nocodb.{your domain} and set admin password
+After enabling gitlab you should immediately go to gitlab.{your domain}, login with user `root` and your `$PASSWORD`,
+and disable new user registration in configs.
 ```
-docker stack deploy --compose-file nocodb.yml
+docker stack deploy --compose-file gitlab.yml
+```
+
+After enabling rocketchat you should immediately go to rocketchat.{your domain}/admin and set admin password
+```
+docker stack deploy --compose-file rocketchat.yml
 ```
 
 After enabling openproject you should immediately go to openproject.{your domain},
@@ -182,12 +210,12 @@ openproject.{your domain}/admin/settings/general
 docker stack deploy --compose-file openproject.yml
 ```
 
+After enabling nocodb you should immediately go to nocodb.{your domain} and set admin password
+```
+docker stack deploy --compose-file nocodb.yml
+```
+
 After enabling strapi you should immediately go to strapi.{your domain}/admin and set admin password
 ```
 docker stack deploy --compose-file strapi.yml
-```
-
-After enabling rocketchat you should immediately go to rocketchat.{your domain}/admin and set admin password
-```
-docker stack deploy --compose-file rocketchat.yml
 ```

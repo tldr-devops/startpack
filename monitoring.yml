@@ -232,6 +232,7 @@ services:
       - appwrite
       - taiga
       - rocketchat
+      - vaultwarden
 
 x-volume: &volume
   driver: local

@@ -80,6 +80,7 @@ services:
       - appwrite
       - taiga
       - rocketchat
+      - vaultwarden
 
 x-volume: &volume
   driver: local
@@ -172,12 +173,12 @@ volumes:
     driver_opts:
       <<: *volume-driver-opts
       device: ${DATAPATH?Variable DATAPATH not set}/gitlab/logs
-  gitlab-runner-configs:
-    name: gitlab-runner-configs
+  vaultwarden-data:
+    name: vaultwarden-data
     <<: *volume
     driver_opts:
       <<: *volume-driver-opts
-      device: ${DATAPATH?Variable DATAPATH not set}/gitlab-runner/configs
+      device: ${DATAPATH?Variable DATAPATH not set}/vaultwarden/data
 
 x-network: &network
   driver: bridge
@@ -225,4 +226,7 @@ networks:
     <<: *network
   rocketchat:
     name: rocketchat
+    <<: *network
+  vaultwarden:
+    name: vaultwarden
     <<: *network

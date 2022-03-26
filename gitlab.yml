@@ -31,6 +31,7 @@ services:
   # https://docs.gitlab.com/ee/install/docker.html
   # https://docs.gitlab.com/ee/administration/environment_variables.html
   # https://github.com/gitlabhq/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template
+  # https://docs.gitlab.com/ee/administration/monitoring/prometheus/
   gitlab:
     container_name: gitlab
     image: gitlab/gitlab-ce
@@ -46,12 +47,6 @@ services:
       EXTERNAL_URL: https://gitlab.${DOMAIN?Variable DOMAIN not set}
       GITLAB_HOST: https://gitlab.${DOMAIN?Variable DOMAIN not set}
       DATABASE_URL: "postgres://gitlab:${GITLAB_SQL_PASSWORD?Variable GITLAB_SQL_PASSWORD not set}@postgres:5432/gitlab"
-      GITLAB_DATABASE_ADAPTER: "postgresql"
-      GITLAB_DATABASE_DATABASE: "gitlab"
-      GITLAB_DATABASE_HOST: "postgres"
-      GITLAB_DATABASE_PASSWORD: ${GITLAB_SQL_PASSWORD?Variable GITLAB_SQL_PASSWORD not set}
-      GITLAB_DATABASE_PORT: 5432
-      GITLAB_DATABASE_USERNAME: "gitlab"
       GITLAB_ROOT_PASSWORD: ${PASSWORD?Variable PASSWORD not set}
       GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN: ${HASHED_PASSWORD?Variable HASHED_PASSWORD not set}
       GITLAB_OMNIBUS_CONFIG: |

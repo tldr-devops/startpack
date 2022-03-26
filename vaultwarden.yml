@@ -1,0 +1,59 @@
+version: '3.8'
+
+x-vaultwarden-labels: &vaultwarden-labels
+  labels:
+    - traefik.enable=true
+    - traefik.docker.network=vaultwarden
+    - traefik.http.routers.vaultwarden-http.rule=Host(`vaultwarden.${DOMAIN?Variable DOMAIN not set}`)
+    - traefik.http.routers.vaultwarden-http.entrypoints=http
+    - traefik.http.routers.vaultwarden-http.service=vaultwarden
+    - traefik.http.routers.vaultwarden-http.middlewares=https-redirect
+    - traefik.http.routers.vaultwarden-https.rule=Host(`vaultwarden.${DOMAIN?Variable DOMAIN not set}`)
+    - traefik.http.routers.vaultwarden-https.entrypoints=https
+    - traefik.http.routers.vaultwarden-https.tls=true
+    - traefik.http.routers.vaultwarden-https.service=vaultwarden
+    - traefik.http.routers.vaultwarden-https.tls.certresolver=le
+    - traefik.http.services.vaultwarden.loadbalancer.server.port=80
+
+x-service: &service
+  logging:
+    driver: json-file
+    options:
+      max-size: "100m"
+      max-file: "2"
+  restart: always
+  networks:
+    - vaultwarden
+
+services:
+  # https://github.com/dani-garcia/vaultwarden/wiki/Using-Docker-Compose
+  # https://github.com/dani-garcia/vaultwarden/wiki/Configuration-overview
+  # https://github.com/dani-garcia/vaultwarden/blob/main/.env.template
+  vaultwarden:
+    container_name: vaultwarden
+    image: vaultwarden/server
+    deploy:
+      mode: replicated
+      replicas: 1
+      <<: *vaultwarden-labels
+    <<: *vaultwarden-labels
+    <<: *service
+    environment:
+      WEBSOCKET_ENABLED: "true"
+      SIGNUPS_ALLOWED: "false"
+      ADMIN_TOKEN: ${PASSWORD?Variable PASSWORD not set}
+      DOMAIN: "https://vaultwarden.${DOMAIN?Variable DOMAIN not set}"
+    volumes:
+      - vaultwarden-data:/data
+
+volumes:
+  vaultwarden-data:
+    external: True
+
+networks:
+  vaultwarden:
+    name: vaultwarden
+    external: true
+  database:
+    name: database
+    external: true
