@@ -7,7 +7,7 @@ Warning: This setup doesn't provide high level of security or any [high availabi
 Also you can check [Awesome Selfhosted](https://github.com/awesome-selfhosted/awesome-selfhosted) and [Free for Dev](https://free-for.dev/) for more options ;)
 
 Time track:
-- [Filipp Frizzy](https://github.com/Friz-zy/): 51h 35m for 12 days
+- [Filipp Frizzy](https://github.com/Friz-zy/): 52h 30m for 12 days
 
 ## Available and planned open source components
 
@@ -30,7 +30,7 @@ Time track:
 ### Management
 * [DONE] [Gitlab](https://about.gitlab.com/) as git hosting and devops platform
 * [DONE] [Openproject](https://www.openproject.org/) as management software
-* [WIP] [Vaultwarden](https://github.com/dani-garcia/vaultwarden/wiki) as password manager for business
+* [DONE] [Vaultwarden](https://github.com/dani-garcia/vaultwarden/wiki) as password manager for business
 * [Backlog] [Taiga](https://www.taiga.io/) as kanban board based management software
 
 ### Chat
@@ -43,7 +43,7 @@ Time track:
 * [Backlog] [Appwrite](https://appwrite.io/) as firebase alternative
 
 ### CI & CD
-* [WIP] [Gitlab Runner](https://about.gitlab.com/) should be placed on separate host
+* [DONE] [Gitlab Runner](https://about.gitlab.com/) should be placed on separate host
 
 ## Support
 
@@ -218,4 +218,37 @@ docker stack deploy --compose-file nocodb.yml
 After enabling strapi you should immediately go to strapi.{your domain}/admin and set admin password
 ```
 docker stack deploy --compose-file strapi.yml
+```
+
+#### 7) Run gitlab-runner on separate machine with docker-compose
+```
+# Install docker
+curl -fsSL https://get.docker.com -o get-docker.sh
+DRY_RUN=1 sh ./get-docker.sh
+sh ./get-docker.sh
+
+# Install docker-compose
+curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+
+# Get files
+git checkout https://github.com/tldr-devops/startpack.git --depth=1
+cd startpack
+
+# Prepare environment
+mkdir -p {builds,cache}
+export DOMAIN="Your domain"
+export HASHED_PASSWORD="HASHED_PASSWORD from step 4"
+envsubst < configs/gitlab-runner.toml > ./config.toml
+
+# Run runner in docker with docker-compose
+docker-compose -f gitlab-runner.yml up -d
+
+# Check runners logs
+docker-compose -f gitlab-runner.yml logs -f
+```
+
+#### 8) Login into your docker registry on all docker hosts
+```
+docker login -u "Your REGISTRY_USERNAME from step 4" -p "Your REGISTRY_PASSWORD from step 4" registry."YOUR DOMAIN"
 ```

@@ -1,0 +1,20 @@
+[[runners]]
+  environment = ["GIT_SSL_NO_VERIFY=true"]  # hack for tls bug in lates gitlab-runner =\
+  name = "docker-runner"
+  url = "https://gitlab.${DOMAIN}"
+  token = "${HASHED_PASSWORD}"
+  executor = "docker"
+  limit = 2
+  [runners.docker]
+    tls_verify = false
+    image = "ubuntu"
+    privileged = true
+    disable_cache = true
+    pull_policy = "always"
+    volumes = [
+      "/builds:/builds:rw",
+      "/cache:/cache:rw",
+      "/root:/root:rw",
+      "/var/run/docker.sock:/var/run/docker.sock:ro",
+      "/usr/bin/docker:/usr/bin/docker:ro"
+    ]

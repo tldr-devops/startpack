@@ -1,0 +1,25 @@
+version: '3.8'
+
+x-service: &service
+  logging:
+    driver: json-file
+    options:
+      max-size: "100m"
+      max-file: "2"
+  restart: always
+
+services:
+  # https://docs.gitlab.com/runner/install/docker.html
+  # https://docs.gitlab.com/runner/configuration/advanced-configuration.html
+  gitlab-runner:
+    image: gitlab/gitlab-runner:alpine
+    <<: *service
+    volumes:
+      - ./config.toml:/etc/gitlab-runner/config.toml
+      - ./builds:/builds
+      - ./cache:/cache
+      - /root:/root
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /usr/bin/docker:/usr/bin/docker:ro
+    shm_size: '256m'
+    user: root
