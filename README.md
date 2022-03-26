@@ -7,7 +7,7 @@ Warning: This setup doesn't provide high level of security or any [high availabi
 Also you can check [Awesome Selfhosted](https://github.com/awesome-selfhosted/awesome-selfhosted) and [Free for Dev](https://free-for.dev/) for more options ;)
 
 Time track:
-- [Filipp Frizzy](https://github.com/Friz-zy/): 45h 15m for 10 days
+- [Filipp Frizzy](https://github.com/Friz-zy/): 50h 0m for 12 days
 
 ## Available and planned open source components
 
@@ -28,7 +28,7 @@ Time track:
 * [DONE] [Minio](https://minio.io/) as s3 storage
 
 ### Management
-* [WIP] [Gitlab](https://about.gitlab.com/) as git hosting and devops platform
+* [DONE] [Gitlab](https://about.gitlab.com/) as git hosting and devops platform
 * [DONE] [Openproject](https://www.openproject.org/) as management software
 * [Backlog] [Taiga](https://www.taiga.io/) as kanban board based management software
 * [Backlog] [Bitwarden](https://bitwarden.com/) as password manager for business
@@ -41,6 +41,9 @@ Time track:
 * [DONE] [Nocodb](https://www.nocodb.com/) as airtable alternative
 * [DONE] [Strapi](https://strapi.io/) as headless CMS
 * [Backlog] [Appwrite](https://appwrite.io/) as firebase alternative
+
+### CI & CD
+* [WIP] [Gitlab Runner](https://about.gitlab.com/) should be placed on separate host
 
 ## Support
 
@@ -120,6 +123,7 @@ bash setup.sh
 docker-compose -f setup-compose.yml up -d
 docker-compose -f monitoring.yml up -d
 docker-compose -f database.yml up -d
+docker-compose -f gitlab.yml up -d
 docker-compose -f registry.yml up -d
 docker-compose -f minio.yml up -d
 ```
@@ -156,6 +160,7 @@ docker-compose -f rocketchat.yml up -d
 docker stack deploy --compose-file setup-swarm.yml
 docker stack deploy --compose-file monitoring.yml
 docker stack deploy --compose-file database.yml
+docker stack deploy --compose-file gitlab.yml
 docker stack deploy --compose-file registry.yml
 docker stack deploy --compose-file minio.yml
 ```

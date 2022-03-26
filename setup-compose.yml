@@ -6,7 +6,7 @@ x-service: &service
     options:
       max-size: "100m"
       max-file: "2"
-  restart: unless-stopped
+  restart: always
 
 services:
   # https://doc.traefik.io/traefik/getting-started/quick-start/
@@ -154,6 +154,30 @@ volumes:
     driver_opts:
       <<: *volume-driver-opts
       device: ${DATAPATH?Variable DATAPATH not set}/rocketchat/data
+  gitlab-data:
+    name: gitlab-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/gitlab/data
+  gitlab-configs:
+    name: gitlab-configs
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/gitlab/configs
+  gitlab-logs:
+    name: gitlab-logs
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/gitlab/logs
+  gitlab-runner-configs:
+    name: gitlab-runner-configs
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/gitlab-runner/configs
 
 x-network: &network
   driver: bridge

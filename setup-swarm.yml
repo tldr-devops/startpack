@@ -6,7 +6,7 @@ x-service: &service
     options:
       max-size: "100m"
       max-file: "2"
-  restart: unless-stopped
+  restart: always
 
 x-service-deploy: &service-deploy
   mode: replicated
@@ -185,6 +185,30 @@ volumes:
     driver_opts:
       <<: *volume-driver-opts
       device: "${MASTER_IP?Variable MASTER_IP not set}:${DATAPATH?Variable DATAPATH not set}/rocketchat/data"
+  gitlab-data:
+    name: gitlab-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: "${MASTER_IP?Variable MASTER_IP not set}:${DATAPATH?Variable DATAPATH not set}/gitlab/data"
+  gitlab-configs:
+    name: gitlab-configs
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: "${MASTER_IP?Variable MASTER_IP not set}:${DATAPATH?Variable DATAPATH not set}/gitlab/configs"
+  gitlab-logs:
+    name: gitlab-logs
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: "${MASTER_IP?Variable MASTER_IP not set}:${DATAPATH?Variable DATAPATH not set}/gitlab/logs"
+  gitlab-runner-configs:
+    name: gitlab-runner-configs
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: "${MASTER_IP?Variable MASTER_IP not set}:${DATAPATH?Variable DATAPATH not set}/gitlab-runner/configs"
 
 x-network: &network
   driver: overlay

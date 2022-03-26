@@ -1,0 +1,117 @@
+version: '3.8'
+
+x-gitlab-labels: &gitlab-labels
+  labels:
+    - traefik.enable=true
+    - traefik.docker.network=gitlab
+    - traefik.http.routers.gitlab-http.rule=Host(`gitlab.${DOMAIN?Variable DOMAIN not set}`)
+    - traefik.http.routers.gitlab-http.entrypoints=http
+    - traefik.http.routers.gitlab-http.service=gitlab
+    - traefik.http.routers.gitlab-http.middlewares=https-redirect
+    - traefik.http.routers.gitlab-https.rule=Host(`gitlab.${DOMAIN?Variable DOMAIN not set}`)
+    - traefik.http.routers.gitlab-https.entrypoints=https
+    - traefik.http.routers.gitlab-https.tls=true
+    - traefik.http.routers.gitlab-https.service=gitlab
+    - traefik.http.routers.gitlab-https.tls.certresolver=le
+    - traefik.http.services.gitlab.loadbalancer.server.port=80
+
+x-service: &service
+  logging:
+    driver: json-file
+    options:
+      max-size: "100m"
+      max-file: "2"
+  restart: always
+  networks:
+    - gitlab
+    - database
+
+services:
+  # https://hub.docker.com/r/gitlab/gitlab-ce
+  # https://docs.gitlab.com/ee/install/docker.html
+  # https://docs.gitlab.com/ee/administration/environment_variables.html
+  # https://github.com/gitlabhq/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template
+  gitlab:
+    container_name: gitlab
+    image: gitlab/gitlab-ce
+    deploy:
+      mode: replicated
+      replicas: 1
+      <<: *gitlab-labels
+    <<: *gitlab-labels
+    <<: *service
+    ports:
+      - '2222:22'
+    environment:
+      EXTERNAL_URL: https://gitlab.${DOMAIN?Variable DOMAIN not set}
+      GITLAB_HOST: https://gitlab.${DOMAIN?Variable DOMAIN not set}
+      DATABASE_URL: "postgres://gitlab:${GITLAB_SQL_PASSWORD?Variable GITLAB_SQL_PASSWORD not set}@postgres:5432/gitlab"
+      GITLAB_DATABASE_ADAPTER: "postgresql"
+      GITLAB_DATABASE_DATABASE: "gitlab"
+      GITLAB_DATABASE_HOST: "postgres"
+      GITLAB_DATABASE_PASSWORD: ${GITLAB_SQL_PASSWORD?Variable GITLAB_SQL_PASSWORD not set}
+      GITLAB_DATABASE_PORT: 5432
+      GITLAB_DATABASE_USERNAME: "gitlab"
+      GITLAB_ROOT_PASSWORD: ${PASSWORD?Variable PASSWORD not set}
+      GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN: ${HASHED_PASSWORD?Variable HASHED_PASSWORD not set}
+      GITLAB_OMNIBUS_CONFIG: |
+        # Add any other gitlab.rb configuration here, each on its own line
+        nginx['enable'] = true
+        nginx['listen_port'] = 80
+        nginx['listen_https'] = false
+
+        gitlab_rails['gitlab_shell_ssh_port'] = 2222
+
+        ### GitLab database settings
+        ###! Docs: https://docs.gitlab.com/omnibus/settings/database.html
+        gitlab_rails['db_adapter'] = "postgresql"
+        gitlab_rails['db_database'] = "gitlab"
+        gitlab_rails['db_username'] = "gitlab"
+        gitlab_rails['db_password'] = "${GITLAB_SQL_PASSWORD?Variable GITLAB_SQL_PASSWORD not set}"
+        gitlab_rails['db_host'] = "postgres"
+        gitlab_rails['db_port'] = 5432
+
+        #### Redis TCP connection
+        # gitlab_rails['redis_host'] = "127.0.0.1"
+        # gitlab_rails['redis_port'] = 6379
+        # gitlab_rails['redis_ssl'] = false
+        # gitlab_rails['redis_password'] = nil
+        # gitlab_rails['redis_database'] = 0
+        # gitlab_rails['redis_enable_client'] = true
+
+        letsencrypt['enable'] = false
+        registry['enable'] = false
+        postgresql['enable'] = false
+        prometheus['enable'] = false
+        alertmanager['enable'] = false
+        node_exporter['enable'] = false
+        redis_exporter['enable'] = false
+        postgres_exporter['enable'] = false
+        pgbouncer_exporter['enable'] = false
+        gitlab_exporter['enable'] = false
+        prometheus_monitoring['enable'] = false
+        grafana['enable'] = false
+    volumes:
+      - gitlab-configs:/etc/gitlab
+      - gitlab-logs:/var/log/gitlab
+      - gitlab-data:/var/opt/gitlab
+    shm_size: '256m'
+    user: root
+
+volumes:
+  gitlab-data:
+    external: True
+  gitlab-configs:
+    external: True
+  gitlab-logs:
+    external: True
+  gitlab-runner-configs:
+    external: True
+
+networks:
+  gitlab:
+    name: gitlab
+    external: true
+  database:
+    name: database
+    external: true

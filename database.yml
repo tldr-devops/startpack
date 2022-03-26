@@ -23,7 +23,7 @@ x-service: &service
     options:
       max-size: "100m"
       max-file: "2"
-  restart: unless-stopped
+  restart: always
   networks:
     - database
 
