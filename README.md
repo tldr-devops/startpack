@@ -7,7 +7,7 @@ Warning: This setup doesn't provide high level of security or any [high availabi
 Also you can check [Awesome Selfhosted](https://github.com/awesome-selfhosted/awesome-selfhosted) and [Free for Dev](https://free-for.dev/) for more options ;)
 
 Time track:
-- [Filipp Frizzy](https://github.com/Friz-zy/): 52h 30m for 12 days
+- [Filipp Frizzy](https://github.com/Friz-zy/): 53h 55m for 13 days
 
 ## Available and planned open source components
 
@@ -31,11 +31,16 @@ Time track:
 * [DONE] [Gitlab](https://about.gitlab.com/) as git hosting and devops platform
 * [DONE] [Openproject](https://www.openproject.org/) as management software
 * [DONE] [Vaultwarden](https://github.com/dani-garcia/vaultwarden/wiki) as password manager for business
+* [Backlog] [Tuleap](https://www.tuleap.org/) as management software
+* [Backlog] [Zentao](https://www.zentao.pm) as scrum management software
 * [Backlog] [Taiga](https://www.taiga.io/) as kanban board based management software
+* [Backlog] [Nextcloud][https://nextcloud.com/] or [Owncloud][https://owncloud.com/] as cloud storage
 
 ### Chat
 * [DONE] [rocket](https://rocket.chat/)
 * [Backlog] [mattermost](https://mattermost.com/)
+* [Backlog] [Twake](https://twake.app/) as alternative to Microsoft Teams
+* [Backlog] [Wire](https://wire.com) as alternative to Microsoft Teams
 
 ### Backend as a service
 * [DONE] [Nocodb](https://www.nocodb.com/) as airtable alternative

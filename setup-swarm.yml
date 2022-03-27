@@ -112,6 +112,7 @@ services:
       - taiga
       - rocketchat
       - vaultwarden
+      - twake
 
 x-volume: &volume
   driver: local
@@ -210,6 +211,12 @@ volumes:
     driver_opts:
       <<: *volume-driver-opts
       device: "${MASTER_IP?Variable MASTER_IP not set}:${DATAPATH?Variable DATAPATH not set}/vaultwarden/data"
+  twake-data:
+    name: twake-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: "${MASTER_IP?Variable MASTER_IP not set}:${DATAPATH?Variable DATAPATH not set}/twake/data"
 
 x-network: &network
   driver: overlay
@@ -260,4 +267,7 @@ networks:
     <<: *network
   vaultwarden:
     name: vaultwarden
+    <<: *network
+  twake:
+    name: twake
     <<: *network
