@@ -214,6 +214,7 @@ services:
       - telegraf-configs:/etc/telegraf
     environment:
       SQL_ROOT_PASSWORD: ${SQL_ROOT_PASSWORD?Variable SQL_ROOT_PASSWORD not set}
+      TULEAP_SQL_PASSWORD: ${TULEAP_SQL_PASSWORD?Variable TULEAP_SQL_PASSWORD not set}
       INFLUXDB_TOKEN: ${HASHED_PASSWORD?Variable HASHED_PASSWORD not set}
       INFLUXDB_ORG: ${DOMAIN?Variable DOMAIN not set}
       INFLUXDB_BUCKET: telegraf

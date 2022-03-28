@@ -1,0 +1,105 @@
+version: '3.8'
+
+x-tuleap-labels: &tuleap-labels
+  labels:
+    - traefik.enable=true
+    - traefik.docker.network=tuleap
+    - traefik.http.routers.tuleap-http.rule=Host(`tuleap.${DOMAIN?Variable DOMAIN not set}`)
+    - traefik.http.routers.tuleap-http.entrypoints=http
+    - traefik.http.routers.tuleap-http.service=tuleap
+    - traefik.http.routers.tuleap-http.middlewares=https-redirect
+    - traefik.http.routers.tuleap-https.rule=Host(`tuleap.${DOMAIN?Variable DOMAIN not set}`)
+    - traefik.http.routers.tuleap-https.entrypoints=https
+    - traefik.http.routers.tuleap-https.tls=true
+    - traefik.http.routers.tuleap-https.service=tuleap
+    - traefik.http.routers.tuleap-https.tls.certresolver=le
+    - traefik.http.services.tuleap.loadbalancer.server.port=443
+    - traefik.http.services.tuleap.loadbalancer.server.scheme=https
+
+x-service: &service
+  logging:
+    driver: json-file
+    options:
+      max-size: "100m"
+      max-file: "2"
+  restart: always
+  networks:
+    - tuleap
+
+services:
+  # https://tuleap.acms.asso.fr/doc/en/installation-guide/docker-image.html#docker-images-compose
+  # https://github.com/Enalean/tuleap/blob/master/tools/docker/tuleap-community-edition/Dockerfile
+  # passwords - "we recommend at least 20 chars but only alphabetical & numbers"
+  tuleap:
+    container_name: tuleap
+    image: tuleap/tuleap-community-edition
+    deploy:
+      mode: replicated
+      replicas: 1
+      <<: *tuleap-labels
+    <<: *tuleap-labels
+    <<: *service
+    ports:
+      - '2322:22'
+    environment:
+      TULEAP_FQDN: tuleap.${DOMAIN?Variable DOMAIN not set}
+      TULEAP_SYS_DBHOST: tuleap-mysql
+      TULEAP_SYS_DBPASSWD: ${TULEAP_SQL_PASSWORD?Variable TULEAP_SQL_PASSWORD not set}
+      SITE_ADMINISTRATOR_PASSWORD: ${PASSWORD?Variable PASSWORD not set}
+      #TULEAP_INSTALL_SKIP_DB: 1 # it doesn't work
+      DB_ADMIN_USER: root
+      DB_ADMIN_PASSWORD: ${TULEAP_SQL_PASSWORD?Variable TULEAP_SQL_PASSWORD not set}
+      #TULEAP_FPM_SESSION_MODE: redis
+      #TULEAP_REDIS_SERVER: redis
+      #TULEAP_EMAIL_RELAYHOST: mailhog:1025
+      #TULEAP_EMAIL_RELAYHOST: your-smtp.example.com:2025
+    volumes:
+      - tuleap-data:/data
+    depends_on:
+      - tuleap-mysql
+    healthcheck:
+      test: ["CMD", "/usr/bin/tuleap", "healthcheck"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 2s
+
+  tuleap-mysql:
+    container_name: tuleap-mysql
+    image: mysql:5.7
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+    <<: *service
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci", "--sql-mode=NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"]
+    environment:
+      MYSQL_ROOT_PASSWORD: ${TULEAP_SQL_PASSWORD?Variable TULEAP_SQL_PASSWORD not set}
+      #MYSQL_DATABASE: tuleap
+      #MYSQL_USER: tuleapadm
+      #MYSQL_PASSWORD: ${TULEAP_SQL_PASSWORD?Variable TULEAP_SQL_PASSWORD not set}
+    volumes:
+      - tuleap-mysql-data:/var/lib/mysql
+
+x-volume: &volume
+  driver: local
+x-volume-driver-opts: &volume-driver-opts
+  type: none
+  o: bind
+
+volumes:
+  tuleap-data:
+    external: True
+  tuleap-mysql-data:
+    name: tuleap-mysql-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/tuleap-mysql/data
+
+networks:
+  tuleap:
+    name: tuleap
+    external: true

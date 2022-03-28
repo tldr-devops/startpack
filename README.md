@@ -7,7 +7,7 @@ Warning: This setup doesn't provide high level of security or any [high availabi
 Also you can check [Awesome Selfhosted](https://github.com/awesome-selfhosted/awesome-selfhosted) and [Free for Dev](https://free-for.dev/) for more options ;)
 
 Time track:
-- [Filipp Frizzy](https://github.com/Friz-zy/): 53h 55m for 13 days
+- [Filipp Frizzy](https://github.com/Friz-zy/): 57h 5m for 14 days
 
 ## Available and planned open source components
 
@@ -34,11 +34,11 @@ Time track:
 * [Backlog] [Tuleap](https://www.tuleap.org/) as management software
 * [Backlog] [Zentao](https://www.zentao.pm) as scrum management software
 * [Backlog] [Taiga](https://www.taiga.io/) as kanban board based management software
-* [Backlog] [Nextcloud][https://nextcloud.com/] or [Owncloud][https://owncloud.com/] as cloud storage
+* [Backlog] [Nextcloud](https://nextcloud.com/) or [Owncloud](https://owncloud.com/) as cloud storage
 
 ### Chat
 * [DONE] [rocket](https://rocket.chat/)
-* [Backlog] [mattermost](https://mattermost.com/)
+* [Backlog] [Mattermost](https://mattermost.com/)
 * [Backlog] [Twake](https://twake.app/) as alternative to Microsoft Teams
 * [Backlog] [Wire](https://wire.com) as alternative to Microsoft Teams
 
@@ -95,6 +95,7 @@ cd startpack
 
 Generate random passwords
 ```
+echo -e "export TULEAP_SQL_PASSWORD=$(echo $RANDOM `date`|md5sum|base64|head -c 25)\n$(cat env.sh)" > env.sh
 echo -e "export STRAPI_SQL_PASSWORD=$(echo $RANDOM `date`|md5sum|base64|head -c 25)\n$(cat env.sh)" > env.sh
 echo -e "export GITLAB_SQL_PASSWORD=$(echo $RANDOM `date`|md5sum|base64|head -c 25)\n$(cat env.sh)" > env.sh
 echo -e "export OPENPROJECT_SQL_PASSWORD=$(echo $RANDOM `date`|md5sum|base64|head -c 25)\n$(cat env.sh)" > env.sh
@@ -125,16 +126,17 @@ bash setup.sh
 
 After entering all commands below you'll able to login into your new services by addresses:
 * https://portainer.${YOUR DOMAIN}
-* https://registry.${YOUR DOMAIN}
-* https://influxdb.${YOUR DOMAIN}
-* https://grafana.${YOUR DOMAIN}
-* https://victoriametrics.${YOUR DOMAIN}
-* https://adminer.${YOUR DOMAIN}
-* https://minio.${YOUR DOMAIN}
-* https://gitlab.${YOUR DOMAIN}
-* https://openproject.${YOUR DOMAIN}
+* https://registry.${YOUR DOMAIN} user `your $REGISTRY_USERNAME` password `your $REGISTRY_PASSWORD`
+* https://influxdb.${YOUR DOMAIN} user `your $USERNAME` password `your $PASSWORD`
+* https://grafana.${YOUR DOMAIN} user `your $USERNAME` password `your $PASSWORD`
+* https://victoriametrics.${YOUR DOMAIN} user `your $USERNAME` password `your $PASSWORD`
+* https://adminer.${YOUR DOMAIN} user `your $USERNAME` password `your $PASSWORD`
+* https://minio.${YOUR DOMAIN} user `your $USERNAME` password `your $PASSWORD`
+* https://gitlab.${YOUR DOMAIN} user `root` password `your $PASSWORD`
+* https://tuleap.${YOUR DOMAIN} user `admin` password `your $PASSWORD`
+* https://openproject.${YOUR DOMAIN} user `admin` password `admin`
 * https://rocketchat.${YOUR DOMAIN}
-* https://vaultwarden.${YOUR DOMAIN}/admin
+* https://vaultwarden.${YOUR DOMAIN}/admin password `your $PASSWORD`
 * https://nocodb.${YOUR DOMAIN}
 * https://strapi.${YOUR DOMAIN}
 
@@ -142,10 +144,11 @@ After entering all commands below you'll able to login into your new services by
 ```
 docker-compose -f setup-compose.yml up -d
 docker-compose -f monitoring.yml up -d
-docker-compose -f database.yml up -d
+docker-compose -f databases.yml up -d
 docker-compose -f registry.yml up -d
 docker-compose -f minio.yml up -d
 docker-compose -f vaultwarden.yml up -d
+docker-compose -f tuleap.yml up -d
 ```
 
 After enabling portainer you should immediately go to portainer.{your domain} and set admin password
@@ -186,10 +189,11 @@ docker-compose -f strapi.yml up -d
 ```
 docker stack deploy --compose-file setup-swarm.yml
 docker stack deploy --compose-file monitoring.yml
-docker stack deploy --compose-file database.yml
+docker stack deploy --compose-file databases.yml
 docker stack deploy --compose-file registry.yml
 docker stack deploy --compose-file minio.yml
 docker stack deploy --compose-file vaultwarden.yml
+docker stack deploy --compose-file tuleap.yml
 ```
 
 After enabling portainer you should immediately go to portainer.{your domain} and set admin password
@@ -257,3 +261,5 @@ docker-compose -f gitlab-runner.yml logs -f
 ```
 docker login -u "Your REGISTRY_USERNAME from step 4" -p "Your REGISTRY_PASSWORD from step 4" registry."YOUR DOMAIN"
 ```
+
+#### 9) You should configure backups of your server, at least $DATAPATH directory

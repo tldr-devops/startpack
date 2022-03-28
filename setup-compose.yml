@@ -59,6 +59,7 @@ services:
       - --metrics.prometheus=true
       - --entryPoints.metrics.address=:8082
       - --metrics.prometheus.entryPoint=metrics
+      - --serverstransport.insecureskipverify=true
     healthcheck:
       test: ["CMD", "wget", "-c", "http://localhost:8081/ping"]
       interval: 1s
@@ -82,6 +83,7 @@ services:
       - rocketchat
       - vaultwarden
       - twake
+      - tuleap
 
 x-volume: &volume
   driver: local
@@ -186,6 +188,12 @@ volumes:
     driver_opts:
       <<: *volume-driver-opts
       device: ${DATAPATH?Variable DATAPATH not set}/twake/data
+  tuleap-data:
+    name: tuleap-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/tuleap/data
 
 x-network: &network
   driver: bridge
@@ -239,4 +247,7 @@ networks:
     <<: *network
   twake:
     name: twake
+    <<: *network
+  tuleap:
+    name: tuleap
     <<: *network
