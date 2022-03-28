@@ -1,0 +1,64 @@
+version: '3.8'
+
+x-nextcloud-labels: &nextcloud-labels
+  labels:
+    - traefik.enable=true
+    - traefik.docker.network=nextcloud
+    - traefik.http.routers.nextcloud-http.rule=Host(`nextcloud.${DOMAIN?Variable DOMAIN not set}`)
+    - traefik.http.routers.nextcloud-http.entrypoints=http
+    - traefik.http.routers.nextcloud-http.service=nextcloud
+    - traefik.http.routers.nextcloud-http.middlewares=https-redirect
+    - traefik.http.routers.nextcloud-https.rule=Host(`nextcloud.${DOMAIN?Variable DOMAIN not set}`)
+    - traefik.http.routers.nextcloud-https.entrypoints=https
+    - traefik.http.routers.nextcloud-https.tls=true
+    - traefik.http.routers.nextcloud-https.service=nextcloud
+    - traefik.http.routers.nextcloud-https.tls.certresolver=le
+    - traefik.http.services.nextcloud.loadbalancer.server.port=80
+
+x-service: &service
+  logging:
+    driver: json-file
+    options:
+      max-size: "100m"
+      max-file: "2"
+  restart: always
+  networks:
+    - nextcloud
+    - database
+
+services:
+  # https://hub.docker.com/_/nextcloud
+  nextcloud:
+    container_name: nextcloud
+    image: nextcloud
+    deploy:
+      mode: replicated
+      replicas: 1
+      <<: *nextcloud-labels
+    <<: *nextcloud-labels
+    <<: *service
+    environment:
+      POSTGRES_DB: nextcloud
+      POSTGRES_USER: nextcloud
+      POSTGRES_PASSWORD: ${NEXTCLOUD_SQL_PASSWORD?Variable NEXTCLOUD_SQL_PASSWORD not set}
+      POSTGRES_HOST: postgres
+      NEXTCLOUD_ADMIN_USER: ${USERNAME?Variable USERNAME not set}
+      NEXTCLOUD_ADMIN_PASSWORD: ${PASSWORD?Variable PASSWORD not set}
+      NEXTCLOUD_TRUSTED_DOMAINS: nextcloud.${DOMAIN?Variable DOMAIN not set}
+      VIRTUAL_HOST: nextcloud.${DOMAIN?Variable DOMAIN not set}
+      #NEXTCLOUD_UPDATE: "true"
+    volumes:
+      - nextcloud-data:/var/www/html
+    user: root
+
+volumes:
+  nextcloud-data:
+    external: True
+
+networks:
+  nextcloud:
+    name: nextcloud
+    external: true
+  database:
+    name: database
+    external: true

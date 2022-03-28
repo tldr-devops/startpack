@@ -84,6 +84,7 @@ services:
       - vaultwarden
       - twake
       - tuleap
+      - nextcloud
 
 x-volume: &volume
   driver: local
@@ -194,6 +195,12 @@ volumes:
     driver_opts:
       <<: *volume-driver-opts
       device: ${DATAPATH?Variable DATAPATH not set}/tuleap/data
+  nextcloud-data:
+    name: nextcloud-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/nextcloud/data
 
 x-network: &network
   driver: bridge
@@ -250,4 +257,7 @@ networks:
     <<: *network
   tuleap:
     name: tuleap
+    <<: *network
+  nextcloud:
+    name: nextcloud
     <<: *network

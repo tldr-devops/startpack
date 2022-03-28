@@ -234,6 +234,8 @@ services:
       - taiga
       - rocketchat
       - vaultwarden
+      - tuleap
+      - nextcloud
 
 x-volume: &volume
   driver: local
@@ -315,4 +317,10 @@ networks:
     <<: *network
   taiga:
     name: taiga
+    <<: *network
+  tuleap:
+    name: tuleap
+    <<: *network
+  nextcloud:
+    name: nextcloud
     <<: *network

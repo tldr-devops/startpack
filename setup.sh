@@ -1,4 +1,4 @@
-mkdir -p ${DATAPATH?Variable DATAPATH not set}/{traefik,mariadb,postgres,portainer,registry,minio,nocodb,openproject,gitlab,strapi,telegraf,victoriametrics,influxdb,grafana,rocketchat,rocketchat-mongodb,gitlab,vaultwarden,twake,twake-mongodb,tuleap,tuleap-mysql}/{data,entrypoint,configs,certificates,logs}
+mkdir -p ${DATAPATH?Variable DATAPATH not set}/{traefik,mariadb,postgres,portainer,registry,minio,nocodb,openproject,gitlab,strapi,telegraf,victoriametrics,influxdb,grafana,rocketchat,rocketchat-mongodb,gitlab,vaultwarden,twake,twake-mongodb,tuleap,tuleap-mysql,nextcloud}/{data,entrypoint,configs,certificates,logs}
 
 envsubst < configs/postgres.sql > ${DATAPATH?Variable DATAPATH not set}/postgres/entrypoint/init.sql
 envsubst < configs/mariadb.sql > ${DATAPATH?Variable DATAPATH not set}/mariadb/entrypoint/init.sql

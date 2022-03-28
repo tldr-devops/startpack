@@ -7,7 +7,7 @@ Warning: This setup doesn't provide high level of security or any [high availabi
 Also you can check [Awesome Selfhosted](https://github.com/awesome-selfhosted/awesome-selfhosted) and [Free for Dev](https://free-for.dev/) for more options ;)
 
 Time track:
-- [Filipp Frizzy](https://github.com/Friz-zy/): 57h 5m for 14 days
+- [Filipp Frizzy](https://github.com/Friz-zy/): 57h 45m for 14 days
 
 ## Available and planned open source components
 
@@ -29,12 +29,13 @@ Time track:
 
 ### Management
 * [DONE] [Gitlab](https://about.gitlab.com/) as git hosting and devops platform
+* [DONE] [Nextcloud](https://nextcloud.com/) as cloud storage with plugins for emal, task management, password storage, etc
+* [DONE] [Tuleap](https://www.tuleap.org/) as management software
 * [DONE] [Openproject](https://www.openproject.org/) as management software
 * [DONE] [Vaultwarden](https://github.com/dani-garcia/vaultwarden/wiki) as password manager for business
-* [Backlog] [Tuleap](https://www.tuleap.org/) as management software
 * [Backlog] [Zentao](https://www.zentao.pm) as scrum management software
 * [Backlog] [Taiga](https://www.taiga.io/) as kanban board based management software
-* [Backlog] [Nextcloud](https://nextcloud.com/) or [Owncloud](https://owncloud.com/) as cloud storage
+* [Backlog] [Owncloud](https://owncloud.com/) as cloud storage
 
 ### Chat
 * [DONE] [rocket](https://rocket.chat/)
@@ -95,6 +96,7 @@ cd startpack
 
 Generate random passwords
 ```
+echo -e "export NEXTCLOUD_SQL_PASSWORD=$(echo $RANDOM `date`|md5sum|base64|head -c 25)\n$(cat env.sh)" > env.sh
 echo -e "export TULEAP_SQL_PASSWORD=$(echo $RANDOM `date`|md5sum|base64|head -c 25)\n$(cat env.sh)" > env.sh
 echo -e "export STRAPI_SQL_PASSWORD=$(echo $RANDOM `date`|md5sum|base64|head -c 25)\n$(cat env.sh)" > env.sh
 echo -e "export GITLAB_SQL_PASSWORD=$(echo $RANDOM `date`|md5sum|base64|head -c 25)\n$(cat env.sh)" > env.sh
@@ -133,6 +135,7 @@ After entering all commands below you'll able to login into your new services by
 * https://adminer.${YOUR DOMAIN} user `your $USERNAME` password `your $PASSWORD`
 * https://minio.${YOUR DOMAIN} user `your $USERNAME` password `your $PASSWORD`
 * https://gitlab.${YOUR DOMAIN} user `root` password `your $PASSWORD`
+* https://nextcloud.${YOUR DOMAIN} user `your $USERNAME` password `your $PASSWORD`
 * https://tuleap.${YOUR DOMAIN} user `admin` password `your $PASSWORD`
 * https://openproject.${YOUR DOMAIN} user `admin` password `admin`
 * https://rocketchat.${YOUR DOMAIN}
@@ -149,6 +152,7 @@ docker-compose -f registry.yml up -d
 docker-compose -f minio.yml up -d
 docker-compose -f vaultwarden.yml up -d
 docker-compose -f tuleap.yml up -d
+docker-compose -f nextcloud.yml up -d
 ```
 
 After enabling portainer you should immediately go to portainer.{your domain} and set admin password
@@ -194,6 +198,7 @@ docker stack deploy --compose-file registry.yml
 docker stack deploy --compose-file minio.yml
 docker stack deploy --compose-file vaultwarden.yml
 docker stack deploy --compose-file tuleap.yml
+docker stack deploy --compose-file nextcloud.yml
 ```
 
 After enabling portainer you should immediately go to portainer.{your domain} and set admin password
