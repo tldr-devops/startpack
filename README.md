@@ -127,21 +127,21 @@ bash setup.sh
 #### 6) Run your new services
 
 After entering all commands below you'll able to login into your new services by addresses:
-* https://portainer.${YOUR DOMAIN}
-* https://registry.${YOUR DOMAIN} user `your $REGISTRY_USERNAME` password `your $REGISTRY_PASSWORD`
-* https://influxdb.${YOUR DOMAIN} user `your $USERNAME` password `your $PASSWORD`
-* https://grafana.${YOUR DOMAIN} user `your $USERNAME` password `your $PASSWORD`
-* https://victoriametrics.${YOUR DOMAIN} user `your $USERNAME` password `your $PASSWORD`
-* https://adminer.${YOUR DOMAIN} user `your $USERNAME` password `your $PASSWORD`
-* https://minio.${YOUR DOMAIN} user `your $USERNAME` password `your $PASSWORD`
-* https://gitlab.${YOUR DOMAIN} user `root` password `your $PASSWORD`
-* https://nextcloud.${YOUR DOMAIN} user `your $USERNAME` password `your $PASSWORD`
-* https://tuleap.${YOUR DOMAIN} user `admin` password `your $PASSWORD`
-* https://openproject.${YOUR DOMAIN} user `admin` password `admin`
-* https://rocketchat.${YOUR DOMAIN}
-* https://vaultwarden.${YOUR DOMAIN}/admin password `your $PASSWORD`
-* https://nocodb.${YOUR DOMAIN}
-* https://strapi.${YOUR DOMAIN}
+* https://portainer.your_domain
+* https://registry.your_domain user `your $REGISTRY_USERNAME` password `your $REGISTRY_PASSWORD`
+* https://influxdb.your_domain user `your $USERNAME` password `your $PASSWORD`
+* https://grafana.your_domain user `your $USERNAME` password `your $PASSWORD`
+* https://victoriametrics.your_domain user `your $USERNAME` password `your $PASSWORD`
+* https://adminer.your_domain user `your $USERNAME` password `your $PASSWORD`
+* https://minio.your_domain user `your $USERNAME` password `your $PASSWORD`
+* https://gitlab.your_domain user `root` password `your $PASSWORD`
+* https://nextcloud.your_domain user `your $USERNAME` password `your $PASSWORD`
+* https://tuleap.your_domain user `admin` password `your $PASSWORD`
+* https://openproject.your_domain user `admin` password `admin`
+* https://rocketchat.your_domain
+* https://vaultwarden.your_domain/admin password `your $PASSWORD`
+* https://nocodb.your_domain
+* https://strapi.your_domain
 
 ##### Docker Compose
 ```
