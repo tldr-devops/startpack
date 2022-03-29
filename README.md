@@ -7,7 +7,7 @@ Warning: This setup doesn't provide high level of security or any [high availabi
 Also you can check [Awesome Selfhosted](https://github.com/awesome-selfhosted/awesome-selfhosted) and [Free for Dev](https://free-for.dev/) for more options ;)
 
 Time track:
-- [Filipp Frizzy](https://github.com/Friz-zy/): 61h 0m for 15 days
+- [Filipp Frizzy](https://github.com/Friz-zy/): 61h 55m for 15 days
 
 ## Available and planned open source components
 
@@ -79,14 +79,13 @@ DRY_RUN=1 sh ./get-docker.sh
 sh ./get-docker.sh
 ```
 
-#### 2) Install docker-compose or setup docker swarm
-Install docker-compose if you don't wanna use more complex docker swarm.
+Install docker-compose
 ```
 curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 ```
 
-[Setup docker swarm](https://docs.docker.com/engine/reference/commandline/swarm_init/) if you choose using it.
+#### 2) [Setup docker swarm](https://docs.docker.com/engine/reference/commandline/swarm_init/) if you choose using it.
 ```
 docker swarm init --advertise-addr $(hostname -I | awk '{print $1}')
 ```
@@ -195,6 +194,11 @@ docker-compose -f strapi.yml up -d
 ```
 
 ##### Docker Swarm
+
+Setup NFS server with compose as docker-swarm still doesn't support `privileged` mode
+```
+docker-compose -f nfs.yml up -d
+```
 
 Mandatory steps
 ```

@@ -1,0 +1,34 @@
+version: '3.8'
+
+x-service: &service
+  logging:
+    driver: json-file
+    options:
+      max-size: "100m"
+      max-file: "2"
+  restart: always
+
+services:
+  # https://sysadmins.co.za/setup-a-nfs-server-with-docker/
+  nfs:
+    container_name: nfs
+    image: itsthenetwork/nfs-server-alpine:12
+    ports:
+      - 2049:2049
+    deploy:
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 50M
+      <<: *service-deploy
+    <<: *service
+    environment:
+      SHARED_DIRECTORY: ${DATAPATH?Variable DATAPATH not set}
+      PERMITTED: ${MASTER_IP_MASK?Variable MASTER_IP_MASK not set}
+    volumes:
+      - ${DATAPATH?Variable DATAPATH not set}:${DATAPATH?Variable DATAPATH not set}
+    privileged: true
+    cap_add:
+      - ALL
+    entrypoint: /usr/bin/nfsd.sh
+    user: root

@@ -8,40 +8,7 @@ x-service: &service
       max-file: "2"
   restart: always
 
-x-service-deploy: &service-deploy
-  mode: replicated
-  replicas: 1
-  placement:
-    constraints:
-      - node.hostname == ${HOSTNAME?Variable HOSTNAME not set}
-
 services:
-  # https://sysadmins.co.za/setup-a-nfs-server-with-docker/
-  nfs:
-    container_name: nfs
-    image: itsthenetwork/nfs-server-alpine:12
-    ports:
-      - 2049:2049
-    deploy:
-      resources:
-        reservations:
-          cpus: '0.01'
-          memory: 50M
-      <<: *service-deploy
-    <<: *service
-    environment:
-      SHARED_DIRECTORY: ${DATAPATH?Variable DATAPATH not set}
-      PERMITTED: ${MASTER_IP_MASK?Variable MASTER_IP_MASK not set}
-    volumes:
-      - ${DATAPATH?Variable DATAPATH not set}:${DATAPATH?Variable DATAPATH not set}
-    privileged: true
-    #cap_add:
-      #- SYS_ADMIN
-      #- SETPCAP
-      #- NET_ADMIN
-      #- SYS_TIME
-    entrypoint: /usr/bin/nfsd.sh
-
   # https://doc.traefik.io/traefik/getting-started/quick-start/
   # https://dockerswarm.rocks/traefik/
   traefik:
@@ -55,7 +22,11 @@ services:
         reservations:
           cpus: '0.01'
           memory: 50M
-      <<: *service-deploy
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == ${HOSTNAME?Variable HOSTNAME not set}
       labels:
         - traefik.enable=true
         - traefik.docker.network=ingress
@@ -106,7 +77,6 @@ services:
       retries: 10
       start_period: 2s
     networks:
-      - ingress
       - database
       - monitoring
       - bitwarden
@@ -129,7 +99,7 @@ x-volume: &volume
   driver: local
 x-volume-driver-opts: &volume-driver-opts
   type: nfs
-  o: nfsvers=4,rw
+  o: addr=${MASTER_IP?Variable MASTER_IP not set},nfsvers=4,rw
 
 volumes:
   traefik-certs:
@@ -137,109 +107,109 @@ volumes:
     <<: *volume
     driver_opts:
       <<: *volume-driver-opts
-      device: "${MASTER_IP?Variable MASTER_IP not set}:${DATAPATH?Variable DATAPATH not set}/traefik/certificates"
+      device: ":${DATAPATH?Variable DATAPATH not set}/traefik/certificates"
   portainer-data:
     name: portainer-data
     <<: *volume
     driver_opts:
       <<: *volume-driver-opts
-      device: "${MASTER_IP?Variable MASTER_IP not set}:${DATAPATH?Variable DATAPATH not set}/portainer/data"
+      device: ":${DATAPATH?Variable DATAPATH not set}/portainer/data"
   registry-data:
     name: registry-data
     <<: *volume
     driver_opts:
       <<: *volume-driver-opts
-      device: "${MASTER_IP?Variable MASTER_IP not set}:${DATAPATH?Variable DATAPATH not set}/registry/data"
+      device: ":${DATAPATH?Variable DATAPATH not set}/registry/data"
   minio-data:
     name: minio-data
     <<: *volume
     driver_opts:
       <<: *volume-driver-opts
-      device: "${MASTER_IP?Variable MASTER_IP not set}:${DATAPATH?Variable DATAPATH not set}/minio/data"
+      device: ":${DATAPATH?Variable DATAPATH not set}/minio/data"
   nocodb-data:
     name: nocodb-data
     <<: *volume
     driver_opts:
       <<: *volume-driver-opts
-      device: "${MASTER_IP?Variable MASTER_IP not set}:${DATAPATH?Variable DATAPATH not set}/nocodb/data"
+      device: ":${DATAPATH?Variable DATAPATH not set}/nocodb/data"
   openproject-data:
     name: openproject-data
     <<: *volume
     driver_opts:
       <<: *volume-driver-opts
-      device: "${MASTER_IP?Variable MASTER_IP not set}:${DATAPATH?Variable DATAPATH not set}/openproject/data"
+      device: ":${DATAPATH?Variable DATAPATH not set}/openproject/data"
   strapi-data:
     name: strapi-data
     <<: *volume
     driver_opts:
       <<: *volume-driver-opts
-      device: "${MASTER_IP?Variable MASTER_IP not set}:${DATAPATH?Variable DATAPATH not set}/strapi/data"
+      device: ":${DATAPATH?Variable DATAPATH not set}/strapi/data"
   telegraf-configs:
     name: telegraf-configs
     <<: *volume
     driver_opts:
       <<: *volume-driver-opts
-      device: "${MASTER_IP?Variable MASTER_IP not set}:${DATAPATH?Variable DATAPATH not set}/telegraf/configs"
+      device: ":${DATAPATH?Variable DATAPATH not set}/telegraf/configs"
   grafana-data:
     name: grafana-data
     <<: *volume
     driver_opts:
       <<: *volume-driver-opts
-      device: "${MASTER_IP?Variable MASTER_IP not set}:${DATAPATH?Variable DATAPATH not set}/grafana/data"
+      device: ":${DATAPATH?Variable DATAPATH not set}/grafana/data"
   grafana-provisioning:
     name: grafana-provisioning
     <<: *volume
     driver_opts:
       <<: *volume-driver-opts
-      device: "${MASTER_IP?Variable MASTER_IP not set}:${DATAPATH?Variable DATAPATH not set}/grafana/provisioning"
+      device: ":${DATAPATH?Variable DATAPATH not set}/grafana/provisioning"
   rocketchat-data:
     name: rocketchat-data
     <<: *volume
     driver_opts:
       <<: *volume-driver-opts
-      device: "${MASTER_IP?Variable MASTER_IP not set}:${DATAPATH?Variable DATAPATH not set}/rocketchat/data"
+      device: ":${DATAPATH?Variable DATAPATH not set}/rocketchat/data"
   gitlab-data:
     name: gitlab-data
     <<: *volume
     driver_opts:
       <<: *volume-driver-opts
-      device: "${MASTER_IP?Variable MASTER_IP not set}:${DATAPATH?Variable DATAPATH not set}/gitlab/data"
+      device: ":${DATAPATH?Variable DATAPATH not set}/gitlab/data"
   gitlab-configs:
     name: gitlab-configs
     <<: *volume
     driver_opts:
       <<: *volume-driver-opts
-      device: "${MASTER_IP?Variable MASTER_IP not set}:${DATAPATH?Variable DATAPATH not set}/gitlab/configs"
+      device: ":${DATAPATH?Variable DATAPATH not set}/gitlab/configs"
   gitlab-logs:
     name: gitlab-logs
     <<: *volume
     driver_opts:
       <<: *volume-driver-opts
-      device: "${MASTER_IP?Variable MASTER_IP not set}:${DATAPATH?Variable DATAPATH not set}/gitlab/logs"
+      device: ":${DATAPATH?Variable DATAPATH not set}/gitlab/logs"
   vaultwarden-data:
     name: vaultwarden-data
     <<: *volume
     driver_opts:
       <<: *volume-driver-opts
-      device: "${MASTER_IP?Variable MASTER_IP not set}:${DATAPATH?Variable DATAPATH not set}/vaultwarden/data"
+      device: ":${DATAPATH?Variable DATAPATH not set}/vaultwarden/data"
   twake-data:
     name: twake-data
     <<: *volume
     driver_opts:
       <<: *volume-driver-opts
-      device: "${MASTER_IP?Variable MASTER_IP not set}:${DATAPATH?Variable DATAPATH not set}/twake/data"
+      device: ":${DATAPATH?Variable DATAPATH not set}/twake/data"
   tuleap-data:
     name: tuleap-data
     <<: *volume
     driver_opts:
       <<: *volume-driver-opts
-      device: "${MASTER_IP?Variable MASTER_IP not set}:${DATAPATH?Variable DATAPATH not set}/tuleap/data"
+      device: ":${DATAPATH?Variable DATAPATH not set}/tuleap/data"
   nextcloud-data:
     name: nextcloud-data
     <<: *volume
     driver_opts:
       <<: *volume-driver-opts
-      device: "${MASTER_IP?Variable MASTER_IP not set}:${DATAPATH?Variable DATAPATH not set}/nextcloud/data"
+      device: ":${DATAPATH?Variable DATAPATH not set}/nextcloud/data"
 
 x-network: &network
   driver: overlay
