@@ -51,6 +51,8 @@ Time track:
 ### CI & CD
 * [DONE] [Gitlab Runner](https://about.gitlab.com/) should be placed on separate host
 
+### Miss something? [Could you tell me more about how can I help you, please?](https://forms.gle/wSHs4C6pHXaxVm1a8)
+
 ## Support
 
 You can support this or any other of my projects
