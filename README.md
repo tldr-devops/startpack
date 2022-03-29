@@ -7,7 +7,7 @@ Warning: This setup doesn't provide high level of security or any [high availabi
 Also you can check [Awesome Selfhosted](https://github.com/awesome-selfhosted/awesome-selfhosted) and [Free for Dev](https://free-for.dev/) for more options ;)
 
 Time track:
-- [Filipp Frizzy](https://github.com/Friz-zy/): 60h 35m for 15 days
+- [Filipp Frizzy](https://github.com/Friz-zy/): 61h 0m for 15 days
 
 ## Available and planned open source components
 
@@ -198,46 +198,46 @@ docker-compose -f strapi.yml up -d
 
 Mandatory steps
 ```
-docker stack deploy --compose-file setup-swarm.yml
-docker stack deploy --compose-file databases.yml
+docker stack deploy --compose-file setup-swarm.yml startpack
+docker stack deploy --compose-file databases.yml startpack
 ```
 
 From now on you can choose which services you need
 ```
-docker stack deploy --compose-file monitoring.yml
-docker stack deploy --compose-file registry.yml
-docker stack deploy --compose-file minio.yml
-docker stack deploy --compose-file vaultwarden.yml
-docker stack deploy --compose-file tuleap.yml
-docker stack deploy --compose-file nextcloud.yml
-docker stack deploy --compose-file gitlab.yml
+docker stack deploy --compose-file monitoring.yml startpack
+docker stack deploy --compose-file registry.yml startpack
+docker stack deploy --compose-file minio.yml startpack
+docker stack deploy --compose-file vaultwarden.yml startpack
+docker stack deploy --compose-file tuleap.yml startpack
+docker stack deploy --compose-file nextcloud.yml startpack
+docker stack deploy --compose-file gitlab.yml startpack
 ```
 
 After enabling portainer you should immediately go to portainer.your_domain and set admin password
 ```
-docker stack deploy --compose-file portainer.yml
+docker stack deploy --compose-file portainer.yml startpack
 ```
 
 After enabling rocketchat you should immediately go to rocketchat.your_domain/admin and set admin password
 ```
-docker stack deploy --compose-file rocketchat.yml
+docker stack deploy --compose-file rocketchat.yml startpack
 ```
 
 After enabling openproject you should immediately go to openproject.your_domain,
 login with `admin` user and `admin` password, change it and update settings on
 openproject.your_domain/admin/settings/general
 ```
-docker stack deploy --compose-file openproject.yml
+docker stack deploy --compose-file openproject.yml startpack
 ```
 
 After enabling nocodb you should immediately go to nocodb.your_domain and set admin password
 ```
-docker stack deploy --compose-file nocodb.yml
+docker stack deploy --compose-file nocodb.yml startpack
 ```
 
 After enabling strapi you should immediately go to strapi.your_domain/admin and set admin password
 ```
-docker stack deploy --compose-file strapi.yml
+docker stack deploy --compose-file strapi.yml startpack
 ```
 
 #### 7) Run gitlab-runner on separate machine with docker-compose

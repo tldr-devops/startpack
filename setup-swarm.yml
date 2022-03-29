@@ -248,7 +248,7 @@ x-network: &network
 networks:
   ingress:
     name: ingress
-    <<: *network
+    external: true
   monitoring:
     name: monitoring
     <<: *network
