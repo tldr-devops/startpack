@@ -67,9 +67,9 @@ All operations should be executed from root on target machine. You can use your 
 
 You also need a valid domain name pointed to this server for automatically setting up https with [traefik](https://traefik.io) and [letsencrypt](https://letsencrypt.org). However, you can [hack your hosts file](https://docs.rackspace.com/support/how-to/modify-your-hosts-file/) for working without https.
 
-For bying domain and configuring DNS I recommend you [Cloudflare](https://dash.cloudflare.com). You should create at least two DNS record type A:
+For bying domain and configuring DNS I recommend you [Cloudflare](https://dash.cloudflare.com). You should create at least two DNS record type `A`:
 1) `your domain name` pointed to `your server IP`
-2) *.`your domain name` pointed to `your server IP`
+2) `*.your domain name` pointed to `your server IP`
 
 If you run services with `docker-compose`, all service will be located on your single server. With `docker stack` (swarm) mode, you can [add addition servers](https://docs.docker.com/engine/swarm/swarm-tutorial/add-nodes/) in the same local network (the same network important for nfs volumes mounting unfortunately).
 
