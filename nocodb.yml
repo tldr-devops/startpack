@@ -49,9 +49,19 @@ services:
     volumes:
       - nocodb-data:/usr/app/data
 
+x-volume: &volume
+  driver: local
+x-volume-driver-opts: &volume-driver-opts
+  type: none
+  o: bind
+
 volumes:
   nocodb-data:
-    external: True
+    name: nocodb-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/nocodb/data
 
 networks:
   nocodb:

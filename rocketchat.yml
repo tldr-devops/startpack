@@ -131,7 +131,11 @@ volumes:
       <<: *volume-driver-opts
       device: ${DATAPATH?Variable DATAPATH not set}/rocketchat-mongodb/data
   rocketchat-data:
-    external: True
+    name: rocketchat-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/rocketchat/data
 
 x-network: &network
   external: true

@@ -49,9 +49,19 @@ services:
     volumes:
       - registry-data:/var/lib/registry
 
+x-volume: &volume
+  driver: local
+x-volume-driver-opts: &volume-driver-opts
+  type: none
+  o: bind
+
 volumes:
   registry-data:
-    external: True
+    name: registry-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/registry/data
 
 networks:
   registry:

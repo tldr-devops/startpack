@@ -63,9 +63,19 @@ services:
       retries: 120
       start_period: 2s
 
+x-volume: &volume
+  driver: local
+x-volume-driver-opts: &volume-driver-opts
+  type: none
+  o: bind
+
 volumes:
   minio-data:
-    external: True
+    name: minio-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/minio/data
 
 networks:
   minio:

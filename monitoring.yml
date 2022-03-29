@@ -290,8 +290,6 @@ volumes:
     driver_opts:
       <<: *volume-driver-opts
       device: ${DATAPATH?Variable DATAPATH not set}/victoriametrics/configs
-  telegraf-configs:
-    external: True
   influxdb-data:
     name: influxdb-data
     <<: *volume
@@ -304,10 +302,24 @@ volumes:
     driver_opts:
       <<: *volume-driver-opts
       device: ${DATAPATH?Variable DATAPATH not set}/influxdb/entrypoint
+  telegraf-configs:
+    name: telegraf-configs
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/telegraf/configs
   grafana-data:
-    external: True
+    name: grafana-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/grafana/data
   grafana-provisioning:
-    external: True
+    name: grafana-provisioning
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/grafana/provisioning
 
 x-network: &network
   external: true

@@ -55,9 +55,19 @@ services:
       - nextcloud-data:/var/www/html
     user: root
 
+x-volume: &volume
+  driver: local
+x-volume-driver-opts: &volume-driver-opts
+  type: none
+  o: bind
+
 volumes:
   nextcloud-data:
-    external: True
+    name: nextcloud-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/nextcloud/data
 
 networks:
   nextcloud:

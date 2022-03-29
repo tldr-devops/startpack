@@ -48,9 +48,19 @@ services:
     volumes:
       - openproject-data:/var/lib/openproject
 
+x-volume: &volume
+  driver: local
+x-volume-driver-opts: &volume-driver-opts
+  type: none
+  o: bind
+
 volumes:
   openproject-data:
-    external: True
+    name: openproject-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/openproject/data
 
 networks:
   openproject:

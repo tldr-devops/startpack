@@ -7,7 +7,7 @@ Warning: This setup doesn't provide high level of security or any [high availabi
 Also you can check [Awesome Selfhosted](https://github.com/awesome-selfhosted/awesome-selfhosted) and [Free for Dev](https://free-for.dev/) for more options ;)
 
 Time track:
-- [Filipp Frizzy](https://github.com/Friz-zy/): 61h 55m for 15 days
+- [Filipp Frizzy](https://github.com/Friz-zy/): 62h 30m for 15 days
 
 ## Available and planned open source components
 
@@ -128,6 +128,22 @@ source env.sh
 bash setup.sh
 ```
 
+If you have docker swarm setup with more than one machine, you should start NFS server on main manager and [connect other nodes to it](https://linuxize.com/post/how-to-mount-an-nfs-share-in-linux/):
+
+A) On main machine
+```
+# Setup NFS server with compose as docker-swarm still doesn't support `privileged` mode
+docker-compose -f nfs.yml up -d
+```
+
+B) On all other machines
+```
+export MASTER_IP="your $MASTER_IP from step 4"
+export DATAPATH="your $DATAPATH from step 4"
+echo -e "$MASTER_IP:$DATAPATH $DATAPATH nfs nfsvers=4,rw 0 0" > /etc/fstab
+mount $DATAPATH
+```
+
 #### 6) Run your new services
 
 After entering all commands below you'll able to login into your new services by addresses:
@@ -194,11 +210,6 @@ docker-compose -f strapi.yml up -d
 ```
 
 ##### Docker Swarm
-
-Setup NFS server with compose as docker-swarm still doesn't support `privileged` mode
-```
-docker-compose -f nfs.yml up -d
-```
 
 Mandatory steps
 ```

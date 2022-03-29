@@ -20,7 +20,6 @@ services:
         reservations:
           cpus: '0.01'
           memory: 50M
-      <<: *service-deploy
     <<: *service
     environment:
       SHARED_DIRECTORY: ${DATAPATH?Variable DATAPATH not set}

@@ -97,13 +97,31 @@ services:
     shm_size: '256m'
     user: root
 
+x-volume: &volume
+  driver: local
+x-volume-driver-opts: &volume-driver-opts
+  type: none
+  o: bind
+
 volumes:
   gitlab-data:
-    external: True
+    name: gitlab-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/gitlab/data
   gitlab-configs:
-    external: True
+    name: gitlab-configs
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/gitlab/configs
   gitlab-logs:
-    external: True
+    name: gitlab-logs
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/gitlab/logs
 
 networks:
   gitlab:

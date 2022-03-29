@@ -98,14 +98,18 @@ x-volume-driver-opts: &volume-driver-opts
   o: bind
 
 volumes:
-  tuleap-data:
-    external: True
   tuleap-mysql-data:
     name: tuleap-mysql-data
     <<: *volume
     driver_opts:
       <<: *volume-driver-opts
       device: ${DATAPATH?Variable DATAPATH not set}/tuleap-mysql/data
+  tuleap-data:
+    name: tuleap-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/tuleap/data
 
 networks:
   tuleap:

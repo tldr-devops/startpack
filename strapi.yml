@@ -51,9 +51,19 @@ services:
     volumes:
       - strapi-data:/srv/app
 
+x-volume: &volume
+  driver: local
+x-volume-driver-opts: &volume-driver-opts
+  type: none
+  o: bind
+
 volumes:
   strapi-data:
-    external: True
+    name: strapi-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/strapi/data
 
 networks:
   strapi:

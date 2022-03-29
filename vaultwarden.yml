@@ -50,9 +50,19 @@ services:
     volumes:
       - vaultwarden-data:/data
 
+x-volume: &volume
+  driver: local
+x-volume-driver-opts: &volume-driver-opts
+  type: none
+  o: bind
+
 volumes:
   vaultwarden-data:
-    external: True
+    name: vaultwarden-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/vaultwarden/data
 
 networks:
   vaultwarden:
