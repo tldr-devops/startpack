@@ -7,13 +7,13 @@ Warning: This setup doesn't provide high level of security or any [high availabi
 Also you can check [Awesome Selfhosted](https://github.com/awesome-selfhosted/awesome-selfhosted) and [Free for Dev](https://free-for.dev/) for more options ;)
 
 Time track:
-- [Filipp Frizzy](https://github.com/Friz-zy/): 62h 50m for 15 days
+- [Filipp Frizzy](https://github.com/Friz-zy/): 63h 30m for 15 days
 
 ## Available and planned open source components
 
 ### Platform
 * [DONE] [Docker Compose](https://docs.docker.com/compose/)
-* [Not tested yet] [Docker Swarm](https://docs.docker.com/engine/reference/commandline/stack/)
+* [DONE] [Docker Swarm](https://docs.docker.com/engine/reference/commandline/stack/)
 * [DONE] [Traefik](https://traefik.io) as web server with autodiscovery and [letsencrypt](https://letsencrypt.org) certs
 * [DONE] [NFS](https://hub.docker.com/r/itsthenetwork/nfs-server-alpine/) for docker swarm volumes
 * [DONE] [Portainer](https://www.portainer.io/) as admin panel for docker services
@@ -154,7 +154,7 @@ After entering all commands below you'll able to login into your new services by
 * https://grafana.your_domain user `your $USERNAME` password `your $PASSWORD`
 * https://victoriametrics.your_domain user `your $USERNAME` password `your $PASSWORD`
 * https://adminer.your_domain user `your $USERNAME` password `your $PASSWORD`
-* https://minio.your_domain user `your $USERNAME` password `your $PASSWORD`
+* https://minio-console.your_domain user `your $USERNAME` password `your $PASSWORD`
 * https://gitlab.your_domain user `root` password `your $PASSWORD`
 * https://nextcloud.your_domain user `your $USERNAME` password `your $PASSWORD`
 * https://tuleap.your_domain user `admin` password `your $PASSWORD`
