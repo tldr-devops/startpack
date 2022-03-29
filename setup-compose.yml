@@ -25,7 +25,7 @@ services:
     <<: *service
     labels:
         - traefik.enable=true
-        - traefik.docker.network=ingress
+        - traefik.docker.network=monitoring
         - traefik.http.middlewares.admin-auth.basicauth.users=${USERNAME?Variable USERNAME not set}:${HASHED_PASSWORD?Variable HASHED_PASSWORD not set}
         - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
         - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
@@ -71,7 +71,6 @@ services:
       retries: 10
       start_period: 2s
     networks:
-      - ingress
       - database
       - monitoring
       - bitwarden
@@ -109,9 +108,6 @@ x-network: &network
   attachable: true
 
 networks:
-  ingress:
-    name: ingress
-    <<: *network
   monitoring:
     name: monitoring
     <<: *network

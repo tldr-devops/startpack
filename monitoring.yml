@@ -253,7 +253,6 @@ services:
       INFLUXDB_ORG: ${DOMAIN?Variable DOMAIN not set}
       INFLUXDB_BUCKET: telegraf
     networks:
-      - ingress
       - database
       - monitoring
       - bitwarden
@@ -325,9 +324,6 @@ x-network: &network
   external: true
 
 networks:
-  ingress:
-    name: ingress
-    <<: *network
   monitoring:
     name: monitoring
     <<: *network

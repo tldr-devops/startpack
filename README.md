@@ -7,7 +7,7 @@ Warning: This setup doesn't provide high level of security or any [high availabi
 Also you can check [Awesome Selfhosted](https://github.com/awesome-selfhosted/awesome-selfhosted) and [Free for Dev](https://free-for.dev/) for more options ;)
 
 Time track:
-- [Filipp Frizzy](https://github.com/Friz-zy/): 62h 30m for 15 days
+- [Filipp Frizzy](https://github.com/Friz-zy/): 62h 50m for 15 days
 
 ## Available and planned open source components
 
@@ -147,6 +147,7 @@ mount $DATAPATH
 #### 6) Run your new services
 
 After entering all commands below you'll able to login into your new services by addresses:
+* https://traefik.your_domain user `your $USERNAME` password `your $PASSWORD`
 * https://portainer.your_domain
 * https://registry.your_domain user `your $REGISTRY_USERNAME` password `your $REGISTRY_PASSWORD`
 * https://influxdb.your_domain user `your $USERNAME` password `your $PASSWORD`
