@@ -70,9 +70,13 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 100M
       placement:
         constraints:
-          - node.role == manager
+          - node.hostname == ${HOSTNAME?Variable HOSTNAME not set}
       <<: *victoriametrics-labels
     <<: *victoriametrics-labels
     <<: *service
@@ -91,6 +95,13 @@ services:
   vmagent:
     container_name: vmagent
     image: victoriametrics/vmagent
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 50M
     <<: *service
     volumes:
       - victoriametrics-configs:/etc/victoriametrics
@@ -102,6 +113,13 @@ services:
   vmalert:
     container_name: vmalert
     image: victoriametrics/vmalert
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 50M
     <<: *service
     volumes:
       - victoriametrics-configs:/etc/victoriametrics
@@ -127,6 +145,10 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 50M
       <<: *grafana-labels
     <<: *grafana-labels
     <<: *service
@@ -157,9 +179,13 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 130M
       placement:
         constraints:
-          - node.role == manager
+          - node.hostname == ${HOSTNAME?Variable HOSTNAME not set}
       <<: *influxdb-labels
     <<: *influxdb-labels
     <<: *service
@@ -184,6 +210,10 @@ services:
     image: telegraf
     deploy:
       mode: global
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 50M
     <<: *service
     volumes:
       - telegraf-configs:/etc/telegraf
@@ -209,6 +239,10 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 50M
     <<: *service
     volumes:
       - telegraf-configs:/etc/telegraf
@@ -317,6 +351,18 @@ networks:
     <<: *network
   taiga:
     name: taiga
+    <<: *network
+  rocketchat:
+    name: rocketchat
+    <<: *network
+  rocketchat:
+    name: rocketchat
+    <<: *network
+  vaultwarden:
+    name: vaultwarden
+    <<: *network
+  twake:
+    name: twake
     <<: *network
   tuleap:
     name: tuleap

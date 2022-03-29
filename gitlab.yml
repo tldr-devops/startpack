@@ -38,6 +38,10 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+      resources:
+        reservations:
+          cpus: '0.10'
+          memory: 2900M
       <<: *gitlab-labels
     <<: *gitlab-labels
     <<: *service
@@ -99,8 +103,6 @@ volumes:
   gitlab-configs:
     external: True
   gitlab-logs:
-    external: True
-  gitlab-runner-configs:
     external: True
 
 networks:

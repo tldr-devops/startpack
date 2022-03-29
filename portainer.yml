@@ -33,8 +33,13 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+      resources:
+        reservations:
+          cpus: '0.03'
+          memory: 50M
       placement:
-        constraints: [node.role == manager]
+        constraints:
+          - node.hostname == ${HOSTNAME?Variable HOSTNAME not set}
       <<: *portainer-labels
     <<: *portainer-labels
     <<: *service
@@ -59,8 +64,13 @@ services:
     image: portainer/agent
     deploy:
       mode: global
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 10M
       placement:
-        constraints: [node.platform.os == linux]
+        constraints:
+          - node.platform.os == linux
     <<: *service
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock

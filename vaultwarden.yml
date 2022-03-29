@@ -35,6 +35,10 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 50M
       <<: *vaultwarden-labels
     <<: *vaultwarden-labels
     <<: *service

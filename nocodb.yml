@@ -34,6 +34,10 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 90M
       <<: *nocodb-labels
     <<: *nocodb-labels
     <<: *service

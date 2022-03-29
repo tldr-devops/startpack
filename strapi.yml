@@ -34,6 +34,10 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 160M
       <<: *strapi-labels
     <<: *strapi-labels
     <<: *service

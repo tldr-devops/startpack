@@ -7,7 +7,7 @@ Warning: This setup doesn't provide high level of security or any [high availabi
 Also you can check [Awesome Selfhosted](https://github.com/awesome-selfhosted/awesome-selfhosted) and [Free for Dev](https://free-for.dev/) for more options ;)
 
 Time track:
-- [Filipp Frizzy](https://github.com/Friz-zy/): 57h 45m for 14 days
+- [Filipp Frizzy](https://github.com/Friz-zy/): 60h 35m for 15 days
 
 ## Available and planned open source components
 
@@ -38,7 +38,7 @@ Time track:
 * [Backlog] [Owncloud](https://owncloud.com/) as cloud storage
 
 ### Chat
-* [DONE] [rocket](https://rocket.chat/)
+* [DONE] [Rocket](https://rocket.chat/)
 * [Backlog] [Mattermost](https://mattermost.com/)
 * [Backlog] [Twake](https://twake.app/) as alternative to Microsoft Teams
 * [Backlog] [Wire](https://wire.com) as alternative to Microsoft Teams
@@ -61,8 +61,13 @@ You can support this or any other of my projects
 
 ## Setup
 
-All operations should be executed from root on target machine. You can use your laptop or some server.
-You need a valid domain name pointed to this server for automatically setting up https with [traefik](https://traefik.io) and [letsencrypt](https://letsencrypt.org). However, you can [hack your hosts file](https://docs.rackspace.com/support/how-to/modify-your-hosts-file/) for working without https.
+All operations should be executed from root on target machine. You can use your laptop or some server. For running all services you need at least 2 cpu cores, 8gb memory and 20gb of free disk space. You can find cheap servers on [hetzner.com](https://www.hetzner.com/cloud) or compare small hosters on [vps.today](https://vps.today/).
+
+You also need a valid domain name pointed to this server for automatically setting up https with [traefik](https://traefik.io) and [letsencrypt](https://letsencrypt.org). However, you can [hack your hosts file](https://docs.rackspace.com/support/how-to/modify-your-hosts-file/) for working without https.
+
+For bying domain and configuring DNS I recommend you [Cloudflare](https://dash.cloudflare.com). You should create at least two DNS record type A:
+1) `your domain name` pointed to `your server IP`
+2) *.`your domain name` pointed to `your server IP`
 
 If you run services with `docker-compose`, all service will be located on your single server. With `docker stack` (swarm) mode, you can [add addition servers](https://docs.docker.com/engine/swarm/swarm-tutorial/add-nodes/) in the same local network (the same network important for nfs volumes mounting unfortunately).
 
@@ -88,7 +93,7 @@ docker swarm init --advertise-addr $(hostname -I | awk '{print $1}')
 
 #### 3) Get this repo
 ```
-git checkout https://github.com/tldr-devops/startpack.git --depth=1
+git clone https://github.com/tldr-devops/startpack.git --depth=1
 cd startpack
 ```
 
@@ -144,92 +149,93 @@ After entering all commands below you'll able to login into your new services by
 * https://strapi.your_domain
 
 ##### Docker Compose
+
+Mandatory steps
 ```
 docker-compose -f setup-compose.yml up -d
-docker-compose -f monitoring.yml up -d
 docker-compose -f databases.yml up -d
+```
+
+from now on you can choose which services you need
+```
+docker-compose -f monitoring.yml up -d
 docker-compose -f registry.yml up -d
 docker-compose -f minio.yml up -d
 docker-compose -f vaultwarden.yml up -d
 docker-compose -f tuleap.yml up -d
 docker-compose -f nextcloud.yml up -d
+docker-compose -f gitlab.yml up -d
 ```
 
-After enabling portainer you should immediately go to portainer.{your domain} and set admin password
+After enabling portainer you should immediately go to portainer.your_domain and set admin password
 ```
 docker-compose -f portainer.yml up -d
 ```
 
-After enabling gitlab you should immediately go to gitlab.{your domain}, login with user `root` and your `$PASSWORD`,
-and disable new user registration in configs.
-```
-docker-compose -f gitlab.yml up -d
-```
-
-After enabling rocketchat you should immediately go to rocketchat.{your domain}/admin and set admin password
+After enabling rocketchat you should immediately go to rocketchat.your_domain/admin and set admin password
 ```
 docker-compose -f rocketchat.yml up -d
 ```
 
-After enabling openproject you should immediately go to openproject.{your domain},
+After enabling openproject you should immediately go to openproject.your_domain,
 login with `admin` user and `admin` password, change it and update settings on
-openproject.{your domain}/admin/settings/general
+openproject.your_domain/admin/settings/general
 ```
 docker-compose -f openproject.yml up -d
 ```
 
-After enabling nocodb you should immediately go to nocodb.{your domain} and set admin password
+After enabling nocodb you should immediately go to nocodb.your_domain and set admin password
 ```
 docker-compose -f nocodb.yml up -d
 ```
 
-After enabling strapi you should immediately go to strapi.{your domain}/admin and set admin password
+After enabling strapi you should wait a minute and then go to strapi.your_domain/admin and set admin password
 ```
 docker-compose -f strapi.yml up -d
 ```
 
-
 ##### Docker Swarm
+
+Mandatory steps
 ```
 docker stack deploy --compose-file setup-swarm.yml
-docker stack deploy --compose-file monitoring.yml
 docker stack deploy --compose-file databases.yml
+```
+
+From now on you can choose which services you need
+```
+docker stack deploy --compose-file monitoring.yml
 docker stack deploy --compose-file registry.yml
 docker stack deploy --compose-file minio.yml
 docker stack deploy --compose-file vaultwarden.yml
 docker stack deploy --compose-file tuleap.yml
 docker stack deploy --compose-file nextcloud.yml
+docker stack deploy --compose-file gitlab.yml
 ```
 
-After enabling portainer you should immediately go to portainer.{your domain} and set admin password
+After enabling portainer you should immediately go to portainer.your_domain and set admin password
 ```
 docker stack deploy --compose-file portainer.yml
 ```
 
-After enabling gitlab you should immediately go to gitlab.{your domain}, login with user `root` and your `$PASSWORD`,
-and disable new user registration in configs.
-```
-docker stack deploy --compose-file gitlab.yml
-```
-
-After enabling rocketchat you should immediately go to rocketchat.{your domain}/admin and set admin password
+After enabling rocketchat you should immediately go to rocketchat.your_domain/admin and set admin password
 ```
 docker stack deploy --compose-file rocketchat.yml
 ```
 
-After enabling openproject you should immediately go to openproject.{your domain},
+After enabling openproject you should immediately go to openproject.your_domain,
 login with `admin` user and `admin` password, change it and update settings on
-openproject.{your domain}/admin/settings/general
+openproject.your_domain/admin/settings/general
 ```
 docker stack deploy --compose-file openproject.yml
 ```
 
-After enabling nocodb you should immediately go to nocodb.{your domain} and set admin password
+After enabling nocodb you should immediately go to nocodb.your_domain and set admin password
 ```
 docker stack deploy --compose-file nocodb.yml
 ```
 
-After enabling strapi you should immediately go to strapi.{your domain}/admin and set admin password
+After enabling strapi you should immediately go to strapi.your_domain/admin and set admin password
 ```
 docker stack deploy --compose-file strapi.yml
 ```

@@ -43,6 +43,10 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+      resources:
+        reservations:
+          cpus: '0.03'
+          memory: 70M
       <<: *minio-labels
     <<: *minio-labels
     <<: *service

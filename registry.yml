@@ -36,6 +36,10 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 10M
       <<: *registry-labels
     <<: *registry-labels
     <<: *service

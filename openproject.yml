@@ -34,6 +34,10 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 1400M
       <<: *openproject-labels
     <<: *openproject-labels
     <<: *service

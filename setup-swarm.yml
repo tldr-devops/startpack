@@ -13,7 +13,7 @@ x-service-deploy: &service-deploy
   replicas: 1
   placement:
     constraints:
-      - node.role == manager
+      - node.hostname == ${HOSTNAME?Variable HOSTNAME not set}
 
 services:
   # https://sysadmins.co.za/setup-a-nfs-server-with-docker/
@@ -23,6 +23,10 @@ services:
     ports:
       - 2049:2049
     deploy:
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 50M
       <<: *service-deploy
     <<: *service
     environment:
@@ -47,6 +51,10 @@ services:
       - 80:80
       - 443:443
     deploy:
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 50M
       <<: *service-deploy
       labels:
         - traefik.enable=true

@@ -17,7 +17,11 @@ services:
     ports:
       - 80:80
       - 443:443
-    deploy: {}
+    deploy:
+    resources:
+        reservations:
+          cpus: '0.01'
+          memory: 50M
     <<: *service
     labels:
         - traefik.enable=true

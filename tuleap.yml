@@ -36,6 +36,10 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 160M
       <<: *tuleap-labels
     <<: *tuleap-labels
     <<: *service
@@ -70,9 +74,13 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+      resources:
+        reservations:
+          cpus: '0.25'
+          memory: 300M
       placement:
         constraints:
-          - node.role == manager
+          - node.hostname == ${HOSTNAME?Variable HOSTNAME not set}
     <<: *service
     command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci", "--sql-mode=NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"]
     environment:
