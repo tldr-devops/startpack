@@ -54,7 +54,7 @@ Time track:
 
 ### CMS
 * [Backlog] [Wordpress](https://wordpress.org) one of the most popular CMS
-* [Backlog] [Ghost](https://github.com/TryGhost/Ghost)
+* [Backlog] [Ghost](https://github.com/TryGhost/Ghost) as alternative to medium
 * [Backlog] [Webiny](https://www.webiny.com/) landing page builder with drag and drop features
 * [Backlog] [Grapedrop](https://grapedrop.com/) open source page builder
 
