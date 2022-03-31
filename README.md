@@ -52,6 +52,18 @@ Time track:
 * [DONE] [Strapi](https://strapi.io/) as headless CMS
 * [Backlog] [Appwrite](https://appwrite.io/) as firebase alternative
 
+### CMS
+* [Backlog] [Wordpress](https://wordpress.org) one of the most popular CMS
+* [Backlog] [Ghost](https://github.com/TryGhost/Ghost)
+* [Backlog] [Webiny](https://www.webiny.com/) landing page builder with drag and drop features
+* [Backlog] [Grapedrop](https://grapedrop.com/) open source page builder
+
+### Low Code Platform
+* [Backlog] [Anvil](https://github.com/anvil-works/anvil-runtime) is a framework for building full-stack web apps with nothing but Python
+* [Backlog] [Budibase](https://budibase.com/) build modern business apps in under 5 minutes
+* [Backlog] [Appsmith](https://www.appsmith.com/) a powerful open source framework to build internal tools
+* [Backlog] [Tooljet](https://tooljet.com/) everything you need to build internal tools
+
 ### CI & CD
 * [DONE] [Gitlab Runner](https://about.gitlab.com/) should be placed on separate host
 
