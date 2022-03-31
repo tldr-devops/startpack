@@ -8,6 +8,8 @@ Warning: This setup doesn't provide high level of security or any [high availabi
 
 Also you can check [Awesome Selfhosted](https://github.com/awesome-selfhosted/awesome-selfhosted), [Awesome Sysadmin](https://github.com/kahun/awesome-sysadmin) and [Free for Dev](https://free-for.dev/) for more options ;)
 
+And [Coolify](https://github.com/coollabsio/coolify) or [Dokku](https://dokku.com) - an open-source & self-hostable Heroku / Netlify alternative
+
 [Discuss on hacker news](https://news.ycombinator.com/item?id=30871211#30871600)
 
 Time track:
