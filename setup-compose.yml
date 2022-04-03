@@ -65,7 +65,7 @@ services:
       - --metrics.prometheus.entryPoint=metrics
       - --serverstransport.insecureskipverify=true
     healthcheck:
-      test: ["CMD", "wget", "-c", "http://localhost:8081/ping"]
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "-c", "http://localhost:8081/ping"]
       interval: 1s
       timeout: 1s
       retries: 10
