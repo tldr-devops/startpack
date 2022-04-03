@@ -160,7 +160,7 @@ B) On all other machines
 ```
 export MASTER_IP="your $MASTER_IP from step 4"
 export DATAPATH="your $DATAPATH from step 4"
-echo -e "$MASTER_IP:$DATAPATH $DATAPATH nfs nfsvers=4,rw 0 0" > /etc/fstab
+echo -e "$MASTER_IP:$DATAPATH $DATAPATH nfs nfsvers=4,rw 0 0" >> /etc/fstab
 mount $DATAPATH
 ```
 
