@@ -18,7 +18,7 @@ services:
       - 80:80
       - 443:443
     deploy:
-    resources:
+      resources:
         reservations:
           cpus: '0.01'
           memory: 50M
