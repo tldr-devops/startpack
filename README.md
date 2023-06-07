@@ -35,7 +35,7 @@ Time track:
 
 ### Management
 * [DONE] [Gitlab](https://about.gitlab.com/) as git hosting and devops platform
-* [DONE] [Nextcloud](https://nextcloud.com/) as cloud storage with plugins for emal, task management, password storage, etc
+* [DONE] [Nextcloud](https://nextcloud.com/) as cloud storage with plugins for email, task management, password storage, etc
 * [DONE] [Tuleap](https://www.tuleap.org/) as management software
 * [DONE] [Openproject](https://www.openproject.org/) as management software
 * [DONE] [Vaultwarden](https://github.com/dani-garcia/vaultwarden/wiki) as password manager for business
@@ -161,7 +161,7 @@ B) On all other machines
 ```
 export MASTER_IP="your $MASTER_IP from step 4"
 export DATAPATH="your $DATAPATH from step 4"
-echo -e "$MASTER_IP:$DATAPATH $DATAPATH nfs nfsvers=4,rw 0 0" > /etc/fstab
+echo -e "$MASTER_IP:$DATAPATH $DATAPATH nfs nfsvers=4,rw 0 0" >> /etc/fstab
 mount $DATAPATH
 ```
 
